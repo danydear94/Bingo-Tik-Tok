@@ -1,0 +1,3044 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Bingo En Vivo | Anotarse - Multi Línea</title>
+    
+    <meta property="og:title" content="🎰 BINGO EN VIVO - ANOTARSE">
+    <meta property="og:description" content="Ingresa a este link para escoger tu número de la suerte. Valor por casilla: $3.000">
+    <meta property="og:image" content="https://raw.githubusercontent.com/gersondavidgarcia/bingo-locutando-ando/main/Nuevo_icono.png">
+    <meta property="og:image:secure_url" content="https://raw.githubusercontent.com/gersondavidgarcia/bingo-locutando-ando/main/Nuevo_icono.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="600">
+    <meta property="og:image:height" content="274">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/png" href="logo-locutando.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --oro: #fbbf24;
+            --oro-brillo: #fde047;
+            --acento: #06b6d4;
+            --esmeralda: #10b981;
+            --fondo: #090d16;
+            --panel: #111827;
+            --panel-borde: rgba(255, 255, 255, 0.12);
+            --columnas: 5;
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --font-display: 'Fredoka', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--fondo);
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(6, 182, 212, 0.14) 0%, transparent 45%),
+                radial-gradient(circle at 85% 20%, rgba(251, 191, 36, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+            color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ===== HEADER MODERNO ===== */
+        .header {
+            background: rgba(15, 23, 42, 0.92);
+            backdrop-filter: blur(12px);
+            padding: 10px 14px 8px 14px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid rgba(251, 191, 36, 0.45);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.55);
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            max-width: 900px;
+            margin: 0 auto 8px auto;
+        }
+
+        .brand-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-logo-img {
+            height: 46px;
+            width: auto;
+            min-width: 46px;
+            display: block;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .brand-sub-game {
+            font-size: 16px;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .brand-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* BANNER DE VALOR Y PREMIOS ABAJO */
+        .info-premios-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            max-width: 900px;
+            margin: 14px auto 20px auto;
+            padding: 0 14px;
+        }
+
+        .pill-valor {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            font-weight: 900;
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 999px;
+            border: 1px solid #a7f3d0;
+            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+            letter-spacing: 0.4px;
+        }
+
+        .premios-live-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .pill-premio {
+            background: rgba(251, 191, 36, 0.15);
+            border: 1.5px solid var(--oro);
+            color: var(--oro-brillo);
+            font-weight: 800;
+            font-size: 12px;
+            padding: 4px 11px;
+            border-radius: 999px;
+            text-transform: uppercase;
+        }
+
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 620px;
+            margin: 0 auto;
+        }
+
+        input#nombreUser {
+            padding: 11px 14px;
+            border-radius: 10px;
+            border: 2px solid #334155;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 800;
+            text-transform: uppercase;
+            text-align: center;
+            background: #ffffff;
+            color: #0f172a;
+            transition: all 0.2s ease;
+            outline: none;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        input#nombreUser:focus {
+            border-color: var(--oro);
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.3);
+        }
+
+        input#nombreUser:disabled {
+            background: #1e293b;
+            color: #94a3b8;
+            border-color: #475569;
+            cursor: not-allowed;
+        }
+
+        .stats-bar {
+            font-size: 13px;
+            margin: 7px 0 2px 0;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+        }
+        .stats-libres { color: #cbd5e1; }
+        .stats-ocupados { color: #fde047; }
+        .stats-pagados { color: #34d399; }
+        #msgLineas {
+            display: block;
+            white-space: pre-line;
+            color: #38bdf8;
+            margin-top: 3px;
+            font-weight: 800;
+            font-size: 12px;
+        }
+
+        /* BOTÓN IMAGEN "ENTRAR AL LIVE" (solo vista normal) */
+        #liveBtnWrap { display: none; text-align: center; margin: 0 auto 18px auto; padding: 0 14px; }
+        #liveBtnWrap a { display: inline-block; max-width: 100%; }
+        #liveBtnWrap img { max-width: 100%; max-height: 120px; border-radius: 12px; display: block; margin: 0 auto; box-shadow: 0 4px 16px rgba(0,0,0,0.5); }
+        .live-admin-input { width: 100%; padding: 9px; margin-bottom: 8px; border-radius: 8px; border: 1px solid #475569; background: #050811; color: #fff; font-size: 13px; }
+
+        /* ===== PANEL SUPERIOR DE ADMIN ===== */
+        #adminPanel {
+            background: #0f172a;
+            padding: 10px 12px;
+            display: none;
+            justify-content: center;
+            gap: 7px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.15);
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 11px;
+            font-family: var(--font-main);
+            transition: transform 0.15s ease, filter 0.15s ease;
+        }
+        .btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        .btn:active { transform: translateY(1px); }
+
+        .col-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #1e293b;
+            padding: 5px 12px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            color: var(--oro);
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        /* ===== MODO CAPTURA ===== */
+        .btn-volver-container {
+            width: 100%;
+            display: none;
+            justify-content: center;
+            padding: 20px 0;
+            background: transparent;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            z-index: 9999;
+        }
+        .btn-volver {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #0f172a;
+            padding: 10px 36px;
+            border-radius: 40px;
+            font-size: 15px;
+            font-weight: 900;
+            border: 2px solid #ffffff;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+        }
+
+        .modo-captura .header, 
+        .modo-captura #adminPanel, 
+        .modo-captura #adminExtraPanel { 
+            display: none !important; 
+        }
+        .modo-captura .btn-volver-container { display: flex !important; }
+        .modo-captura .contenedor-tablero {
+            transform: scale(0.84);
+            transform-origin: top center;
+            width: 118%;
+            margin-left: -9%;
+            padding: 8px 0;
+        }
+        .modo-captura .tablero { gap: 6px; padding: 6px; }
+        .modo-captura .linea { font-size: 18px !important; min-height: 52px !important; font-weight: 900 !important; padding: 4px 2px !important; }
+        .modo-captura .carton-h { font-size: 18px !important; padding: 6px !important; }
+        .modo-captura .libre { font-size: 20px !important; }
+        .modo-captura .ronda-grande { font-size: 26px !important; padding: 4px 0 !important; }
+
+        /* ===== CONTENEDOR Y GRILLA DEL TABLERO ===== */
+        .contenedor-tablero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0;
+            position: relative;
+            min-height: 420px;
+        }
+
+        .tablero { 
+            display: grid; 
+            grid-template-columns: repeat(var(--columnas), 1fr); 
+            gap: 10px; 
+            padding: 14px 14px 6px 14px; 
+            width: 100%; 
+            box-sizing: border-box; 
+            transition: all 0.25s ease; 
+            margin: 0;
+        }
+
+        .carton {
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 2px solid #334155;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+            transition: transform 0.15s ease, border-color 0.2s ease;
+        }
+
+        .carton:hover {
+            border-color: #64748b;
+        }
+
+        .carton-h {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            color: var(--oro);
+            font-family: var(--font-display);
+            font-size: 19px;
+            padding: 6px 4px;
+            font-weight: 700;
+            text-align: center;
+            border-bottom: 2px solid #334155;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.1;
+        }
+
+        .carton-fam-sub {
+            font-family: var(--font-main);
+            font-size: 9.5px;
+            font-weight: 800;
+            color: #94a3b8;
+            text-transform: uppercase;
+            max-width: 95%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 2px;
+        }
+
+        .linea {
+            min-height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            border-bottom: 1.5px solid #cbd5e1;
+            color: #0f172a;
+            cursor: pointer;
+            padding: 6px 4px;
+            text-align: center;
+            line-height: 1.15;
+            word-break: break-word;
+            white-space: normal;
+            overflow-wrap: break-word;
+            font-size: 14px;
+            text-transform: uppercase;
+            transition: background-color 0.15s ease, transform 0.1s ease;
+        }
+
+        .linea:last-child {
+            border-bottom: none;
+        }
+
+        .linea:active {
+            transform: scale(0.98);
+        }
+
+        /* TEXTO DE FAMILIA MÁS OSCURO */
+        /* MODO BLANCO: solo cambia el color de las casillas, no el número del cartón */
+        body.modo-blanco .linea.reservado,
+        body.modo-blanco .linea.pagado {
+            background: #ffffff !important;
+            color: #0f172a !important;
+        }
+
+        .libre {
+            color: #475569 !important;
+            font-size: 14px;
+            opacity: 0.85;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+        }
+
+        .reservado {
+            background: linear-gradient(135deg, #fef08a 0%, #facc15 100%) !important;
+            color: #0f172a !important;
+        }
+
+        /* VERDE DE PAGADO MÁS OSCURO */
+        .pagado {
+            background: linear-gradient(135deg, #15803d 0%, #14532d 100%) !important;
+            color: #ffffff !important;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .sel {
+            box-shadow: inset 0 0 0 4px #2563eb !important;
+            position: relative;
+            z-index: 10;
+        }
+
+        .ronda-grande {
+            font-family: var(--font-display);
+            text-align: center;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--oro);
+            padding: 8px 0 4px 0;
+            margin: 0;
+            width: 100%;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(251, 191, 36, 0.35);
+            line-height: 1.2;
+        }
+        .ronda-grande.oculta { display: none; }
+
+        @media (max-width: 700px) {
+            :root { --columnas: 3; }
+            .linea { font-size: 12px; min-height: 50px; }
+            .ronda-grande { font-size: 24px; }
+            .modo-captura .ronda-grande { font-size: 20px !important; }
+            .modo-captura .contenedor-tablero {
+                transform: scale(0.76);
+                width: 132%;
+                margin-left: -16%;
+            }
+            .contenedor-tablero { min-height: 340px; }
+        }
+
+        /* ===== PANEL EXTRA DE ADMINISTRACIÓN ===== */
+        #adminExtraPanel {
+            width: 100%;
+            max-width: 560px;
+            margin: 12px auto 40px auto;
+            padding: 0 12px;
+        }
+
+        .card-admin-box {
+            background: rgba(17, 24, 39, 0.9);
+            border: 1.5px solid rgba(251, 191, 36, 0.4);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+        }
+
+        .seccion-ganador-titulo {
+            color: var(--oro);
+            font-weight: 900;
+            text-align: center;
+            font-size: 15px;
+            letter-spacing: 0.6px;
+            margin-bottom: 6px;
+        }
+
+        .seccion-ganador-sub {
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 14px;
+        }
+
+        .ganador-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .bloque-input {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            background: #0f172a;
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+        }
+
+        .bloque-input-info {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .bloque-input-label {
+            font-size: 13px;
+            font-weight: 900;
+            color: #f8fafc;
+        }
+
+        .bloque-input-premio {
+            font-size: 11.5px;
+            font-weight: 800;
+            color: var(--oro-brillo);
+        }
+
+        .bloque-input input {
+            width: 86px;
+            padding: 8px;
+            font-size: 18px;
+            font-weight: 900;
+            text-align: center;
+            border-radius: 8px;
+            border: 2px solid var(--oro);
+            background: #000000;
+            color: #ffffff;
+            outline: none;
+        }
+
+        .grupo-botones-ganador {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .btn-ganador-enviar {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: white;
+            width: 100%;
+            padding: 12px;
+            font-size: 13px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.25);
+            font-weight: 900;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .btn-ganador-caja {
+            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+            color: #0f172a;
+            width: 100%;
+            padding: 12px;
+            font-size: 13px;
+            border-radius: 10px;
+            border: 1px solid #fef08a;
+            font-weight: 900;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        /* SALDOS DE CAJA (INTACTO EN FUNCIONAMIENTO) */
+        .caja-gastos {
+            width: 100%;
+            margin: 15px auto;
+        }
+
+        textarea#notas-caja {
+            width: 100%;
+            background: #050811;
+            color: #f8fafc;
+            border: 2px solid #334155;
+            border-radius: 10px;
+            padding: 14px;
+            font-family: monospace;
+            font-size: 17px;
+            font-weight: bold;
+            box-sizing: border-box;
+            text-transform: uppercase;
+            min-height: 200px;
+            outline: none;
+        }
+
+        textarea#notas-caja:focus {
+            border-color: #10b981;
+        }
+
+        /* BOTONES DE GESTIÓN DE RONDAS Y MODALES */
+        .admin-buttons-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-limpiar-ronda {
+            background: repeating-linear-gradient(45deg, #1d4ed8, #1d4ed8 14px, #1e40af 14px, #1e40af 28px);
+            color: #fff;
+            width: 100%;
+            font-size: 20px;
+            font-weight: 900;
+            padding: 26px 14px;
+            border: 3px solid #fbbf24;
+            border-radius: 18px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+            box-shadow: 0 0 0 4px rgba(29,78,216,0.4), 0 8px 22px rgba(0,0,0,0.5);
+            margin-bottom: 6px;
+        }
+
+        .separador-peligro {
+            margin: 14px 0 6px 0;
+            text-align: center;
+            border-top: 2px dashed #ef4444;
+            border-bottom: 2px dashed #ef4444;
+            padding: 8px 0;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 8px;
+        }
+        .separador-peligro span {
+            font-size: 11.5px;
+            font-weight: 900;
+            color: #fca5a5;
+        }
+
+        .ronda-nota {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 8px;
+            text-align: center;
+            background: #0f172a;
+            padding: 7px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .btn-reinicio-ronda { background: #b45309; color: white; width: 100%; font-size: 14px; font-weight: 800; padding: 13px; border: 1.5px solid var(--oro); border-radius: 12px; cursor: pointer; text-transform: uppercase; }
+        .btn-stats { background: #7c3aed; color: white; width: 100%; font-size: 14px; font-weight: 800; padding: 13px; border: 1.5px solid var(--oro); border-radius: 12px; cursor: pointer; text-transform: uppercase; }
+        .btn-ranking { background: #ea580c; color: white; width: 100%; font-size: 14px; font-weight: 800; padding: 13px; border: 1.5px solid var(--oro); border-radius: 12px; cursor: pointer; text-transform: uppercase; }
+        .btn-ganadores { background: #db2777; color: white; width: 100%; font-size: 14px; font-weight: 800; padding: 13px; border: 1.5px solid var(--oro); border-radius: 12px; cursor: pointer; text-transform: uppercase; }
+        .btn-numeros { background: #0d9488; color: white; width: 100%; font-size: 14px; font-weight: 800; padding: 13px; border: 1.5px solid var(--oro); border-radius: 12px; cursor: pointer; text-transform: uppercase; }
+        .btn-ronda-gratis { background: #16a34a; color: white; width: 100%; font-size: 14px; font-weight: 800; padding: 13px; border: 1.5px solid var(--oro); border-radius: 12px; cursor: pointer; text-transform: uppercase; }
+        .btn-ruleta { background: #0891b2; color: white; width: 100%; font-size: 14px; font-weight: 800; padding: 13px; border: 1.5px solid var(--oro); border-radius: 12px; cursor: pointer; text-transform: uppercase; }
+
+        .btn-verde { background: #10b981; color: white; }
+        .btn-rojo { background: #ef4444; color: white; }
+        .btn-naranja { background: #f97316; color: white; }
+
+        .btn-reiniciar-todo {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            color: white;
+            width: 100%;
+            font-size: 18px;
+            padding: 18px;
+            margin-top: 14px;
+            border: 3px solid var(--oro);
+            border-radius: 12px;
+            font-weight: 900;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-reiniciar-todo:hover { filter: brightness(1.1); }
+
+        /* ===== MODALES ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(2, 6, 23, 0.88);
+            backdrop-filter: blur(5px);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 12px;
+        }
+
+        .modal-content {
+            background: #111827;
+            border-radius: 14px;
+            padding: 20px;
+            width: 100%;
+            max-width: 460px;
+            border: 2px solid var(--oro);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+        }
+
+        .modal-content textarea, .modal-content input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            background: #050811;
+            color: #fff;
+            border: 1px solid #334155;
+            font-size: 15px;
+            text-transform: uppercase;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+            border: none;
+            min-width: 80px;
+            text-transform: uppercase;
+        }
+
+        .sugerencias-list {
+            background: #0f172a;
+            border-radius: 8px;
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 5px;
+            border: 1px solid #334155;
+        }
+
+        .sugerencia-item {
+            padding: 10px;
+            border-bottom: 1px solid #1e293b;
+            cursor: pointer;
+            color: var(--oro);
+            font-weight: 800;
+        }
+        .sugerencia-item:hover { background: #0284c7; color: white; }
+
+        .resultado-ruleta-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 10px;
+            border-bottom: 1px solid #334155;
+            font-size: 13px;
+            border-radius: 6px;
+            margin-bottom: 4px;
+        }
+        .resultado-ruleta-item .nums { font-weight: 900; }
+
+        /* ===== RANKING DROPDOWN DENTRO DEL MODAL ===== */
+        .ranking-dropdown-container {
+            position: relative;
+            display: block;
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        .ranking-btn-modal {
+            width: 100%;
+            padding: 12px 18px;
+            background: #1e293b;
+            color: white;
+            border: 2px solid var(--oro);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ranking-dropdown-modal {
+            display: none;
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            right: 0;
+            background: #0f172a;
+            border: 2px solid var(--oro);
+            border-radius: 8px;
+            overflow: hidden;
+            z-index: 1001;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+
+        .ranking-dropdown-container.active .ranking-dropdown-modal { display: block; }
+
+        .ranking-item-modal {
+            padding: 10px 18px;
+            cursor: pointer;
+            border-bottom: 1px solid #1e293b;
+            color: white;
+            font-size: 13px;
+            font-weight: 800;
+            text-align: left;
+        }
+        .ranking-item-modal:hover { background: #1e293b; }
+        .ranking-item-modal.total { background: #1e293b; color: var(--oro); }
+        .ranking-item-modal.afuera { background: #450a0a; color: #f87171; border-top: 1px solid #ef4444; }
+
+        /* ===== CRONÓMETRO ===== */
+        #cronometroOverlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(9, 13, 22, 0.94);
+            z-index: 500;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 12px;
+            pointer-events: none;
+        }
+        #cronometroOverlay * { pointer-events: none; }
+        #cronometroOverlay.visible { display: flex !important; }
+
+        .cronometro-titulo {
+            font-family: var(--font-display);
+            font-size: clamp(26px, 5.5vw, 48px);
+            font-weight: 700;
+            color: var(--oro);
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
+            text-align: center;
+        }
+        .cronometro-tiempo {
+            font-family: var(--font-display);
+            font-size: 96px;
+            font-weight: 700;
+            color: var(--oro);
+            margin: 10px 0;
+            line-height: 1;
+        }
+        .cronometro-sub { font-size: 20px; color: #ffffff; margin: 10px 0 5px 0; font-weight: 800; }
+        .cronometro-aviso {
+            font-size: 15px;
+            color: #38bdf8;
+            margin-top: 10px;
+            font-weight: 800;
+            background: rgba(255,255,255,0.05);
+            padding: 10px 18px;
+            border-radius: 50px;
+            border: 1px solid rgba(56, 189, 248, 0.25);
+        }
+        .cronometro-aviso span { color: var(--oro); font-weight: 900; }
+        .cronometro-emojis { font-size: 34px; margin-top: 14px; letter-spacing: 8px; }
+        .cronometro-bar {
+            width: 80%;
+            max-width: 400px;
+            height: 6px;
+            background: #1e293b;
+            border-radius: 10px;
+            margin: 15px auto 0 auto;
+            overflow: hidden;
+        }
+        .cronometro-bar-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #fbbf24, #f97316);
+            border-radius: 10px;
+            transition: width 0.3s linear;
+        }
+
+        .seccion-cronometro {
+            background: rgba(17, 24, 39, 0.9);
+            border: 1.5px solid #06b6d4;
+            border-radius: 12px;
+            padding: 14px;
+            margin: 10px auto;
+            width: 100%;
+            text-align: center;
+        }
+        .seccion-cronometro input {
+            width: 70px;
+            padding: 8px;
+            border-radius: 8px;
+            border: 2px solid #06b6d4;
+            background: #000;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 800;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="brand-container">
+        <div class="brand-left">
+            <!-- ESPACIO PARA TU LOGO + BOTÓN VERDE -->
+            <img src="logo-locutando.png" class="brand-logo-img" alt="Logo">
+            <span class="brand-sub-game" id="activeGameLabel">🟢</span>
+        </div>
+        <div class="brand-actions">
+            <button id="btnLupaExterna" class="btn" style="background:#0284c7; color:white; font-size: 16px; padding: 6px 12px;" onclick="toggleVerificacionGlobal()" title="Verificar líneas de un jugador">🔍</button>
+            <button class="btn" style="background:var(--oro); color:#0f172a;" onclick="toggleAdmin()">⚙️ ADMIN</button>
+        </div>
+    </div>
+
+    <div class="input-wrapper">
+        <input type="text" id="nombreUser" placeholder="ESCRIBE TU NOMBRE AQUÍ" list="sugerenciasCaja" autocomplete="off">
+        <datalist id="sugerenciasCaja"></datalist>
+    </div>
+
+    <div class="stats-bar">
+        <span id="stats"></span>
+        <span id="msgLineas"></span>
+    </div>
+</div>
+
+<!-- BARRA DE HERRAMIENTAS ADMIN -->
+<div id="adminPanel">
+    <button class="btn" style="background:#334155; color:white" onclick="gestionarFilas(1)">+ FILA</button>
+    <button class="btn" style="background:#334155; color:white" onclick="gestionarFilas(-1)">- FILA</button>
+    <div class="col-control">COL <input type="range" min="3" max="9" value="5" id="rangeCol" oninput="cambiarCols(this.value)"> <span id="valCol">5</span></div>
+    <button id="btnBloqueo" class="btn" onclick="toggleBloqueo()">🔓 ABIERTO</button>
+    <button class="btn" style="background:#6d28d9; color:white" onclick="deshacerAccion()">↩️ DESHACER</button>
+    <button class="btn" style="background:#0284c7; color:white" onclick="mostrarModalModificar()">✏️ MODIFICAR NOMBRE(S)</button>
+    <button id="btnPagarCasilla" class="btn" style="background:#10b981; color:white" onclick="marcarAccion('pagado')">💰 PAGAR ($3.000)</button>
+    <button class="btn" style="background:#dc2626; color:#ffffff" onclick="marcarAccion('libre')">❌ LIBERAR</button>
+    <button id="btnBlanco" class="btn" style="background:#ffffff; color:#0f172a; border:1px solid #94a3b8;" onclick="toggleModoBlanco()">BLANCO</button>
+    <label class="col-control" style="cursor:pointer; user-select:none;" title="Activar o desactivar cartas inteligentes">
+        <input type="checkbox" id="chkBotonInvisible" onchange="toggleBotonInvisible(this.checked)" style="cursor:pointer; accent-color:var(--oro);">
+        <span>BOTÓN INVISIBLE</span>
+    </label>
+    <button id="btnCambiarValorPuesto" class="btn" style="background:#0d9488; color:white" onclick="alternarValorCasilla()" title="Cambiar valor del puesto entre $3.000 y $1.500">💲 PUESTO: $3.000 ⇄ $1.500</button>
+</div>
+
+<!-- TABLERO DE CARTONES / PUESTOS -->
+<div class="contenedor-tablero" id="contenedorTablero">
+    <div id="cronometroOverlay">
+        <div style="text-align:center; max-width:600px; width:100%;">
+            <div class="cronometro-titulo">🔥 ¡PREPÁRATE! 🔥</div>
+            <div class="cronometro-sub">El juego se abrirá en</div>
+            <div class="cronometro-tiempo" id="cronometroNumero">12</div>
+            <div class="cronometro-aviso">✍️ Puedes ir escribiendo tu nombre <span>ARRIBA</span> mientras esperas</div>
+            <div class="cronometro-emojis">⚡ 🎰 🍀 💰</div>
+            <div class="cronometro-bar">
+                <div class="cronometro-bar-fill" id="cronometroBarra"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tablero" id="tablero"></div>
+    <div class="ronda-grande oculta" id="rondaGrande">🎰 RONDA 1 🎰</div>
+
+    <!-- BARRA DE VALOR ($3.000 / $1.500) Y PREMIOS DINÁMICOS ABAJO -->
+    <div class="info-premios-bar">
+        <span id="pillValorCasilla" class="pill-valor" onclick="if(config.admin) alternarValorCasilla()" title="Valor por casilla">💵 VALOR CASILLA: $3.000</span>
+        <div class="premios-live-wrap" id="premiosHeaderList">
+            <span class="pill-premio">🏆 PREMIO 1: POR DEFINIR</span>
+            <span class="pill-premio">🏆 PREMIO 2: POR DEFINIR</span>
+        </div>
+    </div>
+    <div id="liveBtnWrap"><a id="liveBtnLink" href="#" target="_blank" rel="noopener"><img id="liveBtnImg" src="" alt="Entrar al Live"></a></div>
+</div>
+
+<!-- PANEL INFERIOR DEL ADMINISTRADOR -->
+<div id="adminExtraPanel" style="display:none;">
+
+    <!-- CONTROL DE GANADORES DINÁMICO (SEGÚN LOS PREMIOS DEL ADMIN) -->
+    <div class="card-admin-box">
+        <div class="seccion-ganador-titulo">🏆 CONTROL DE GANADORES (MULTI LÍNEA)</div>
+        <div class="seccion-ganador-sub" id="subtituloGanadoresAdmin">
+            Sincronizado en orden con los premios configurados en el Admin
+        </div>
+        <div class="ganador-inputs" id="contenedorInputsGanadores">
+            <!-- Se genera dinámicamente según la cantidad de premios en bingo/configuracion/premios -->
+        </div>
+        <div class="grupo-botones-ganador">
+            <button class="btn-ganador-enviar" onclick="generarMensajeGanadorMulti()">📋 COPIAR MENSAJE GANADOR</button>
+            <button class="btn-ganador-caja" onclick="cargarPremiosACajaMulti()">💰 REGISTRAR PREMIOS EN CAJA</button>
+        </div>
+    </div>
+
+    <!-- SALDOS DE CAJA (TAL CUAL) -->
+    <div class="card-admin-box caja-gastos">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <label style="color: #34d399; font-weight: 900; font-size: 14px;">📓 SALDOS DE CAJA</label>
+            <button class="btn" style="background:#10b981; color:white; padding: 7px 14px;" onclick="guardarCaja()">💾 GUARDAR CAJA</button>
+        </div>
+        <textarea id="notas-caja" rows="6" placeholder="DAVID: 10&#10;MARIA: 5" oninput="this.value = this.value.toUpperCase();"></textarea>
+    </div>
+
+    <div class="admin-buttons-stack">
+        <button class="btn-limpiar-ronda" onclick="reiniciarBingo()">🧹 BORRAR TODO Y EMPEZAR NUEVA RONDA</button>
+
+        <div class="separador-peligro">
+            <span>⚠️ 🚨 ⚠️ GESTIÓN Y ESTADÍSTICAS DEL DÍA ⚠️ 🚨 ⚠️</span>
+        </div>
+
+        <button class="btn-reinicio-ronda" onclick="reiniciarRondaACero()">🔄 REINICIAR RONDA A 1 (solo número)</button>
+        <button class="btn-stats" onclick="mostrarModalRondas()">📊 RONDAS POR JUGADOR</button>
+        <button class="btn-ranking" onclick="mostrarModalPuntos()">🏆 RANKING (PUNTOS)</button>
+        <button class="btn-ganadores" onclick="mostrarModalGanadores()">🏆 GANADORES DE RONDAS</button>
+        <button class="btn-ronda-gratis" onclick="copiarListaRondaGratis()">🎁 MANDAR RONDA GRATIS</button>
+        <button class="btn-ruleta" onclick="mostrarModalRuleta()">🎲 ASIGNAR AL AZAR</button>
+
+        <!-- CONFIGURACIÓN CRONÓMETRO -->
+        <div class="seccion-cronometro">
+            <div style="color:#38bdf8; font-size:16px; font-weight:900; margin-bottom:10px;">⏱️ CRONÓMETRO DE APERTURA</div>
+            <div style="display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap;">
+                <label style="color:#fff; font-weight:800; font-size:13px;">Segundos:</label>
+                <input type="number" id="cronometroSegundos" value="12" min="0" max="60">
+                <button class="btn" style="background:#06b6d4; color:#0f172a; padding:8px 16px; font-size:12px;" onclick="guardarSegundosCronometro()">💾 GUARDAR</button>
+            </div>
+            <div style="font-size:11px; color:#94a3b8; margin-top:8px;">
+                ⚠️ Pon 0 segundos para desactivar el cronómetro
+            </div>
+        </div>
+
+        <button class="btn-reiniciar-todo" onclick="reiniciarTodoElJuego()">🔄 REINICIAR TODO EL JUEGO</button>
+        <div style="font-size: 11px; color: #f87171; text-align: center; margin-top: -4px;">
+            ⚠️ Esto reinicia: RONDA, RONDAS POR JUGADOR, RANKING y GANADORES
+        </div>
+
+        <button class="btn" style="background:#7c3aed; color:white; width:100%; font-size:15px; font-weight:900; padding:14px; border:2px solid #c4b5fd; border-radius:12px;" onclick="var d=document.getElementById('liveAdminBox'); d.style.display = d.style.display==='none' ? 'block' : 'none';">📺 ENTRAR AL LIVE</button>
+        <div id="liveAdminBox" class="card-admin-box" style="display:none;">
+            <input type="text" id="liveImgUrl" class="live-admin-input" placeholder="Link de la imagen (https://...)">
+            <input type="text" id="liveLinkUrl" class="live-admin-input" placeholder="Link al que redirige (https://...)">
+            <div style="display:flex; gap:8px;">
+                <button class="btn" style="background:#10b981; color:white; flex:1; padding:9px;" onclick="guardarBotonLive()">💾 GUARDAR</button>
+                <button class="btn" style="background:#ef4444; color:white; flex:1; padding:9px;" onclick="quitarBotonLive()">🗑️ QUITAR</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="btn-volver-container" id="volverArea">
+    <button class="btn btn-volver" onclick="desactivarCaptura()">🔙 VOLVER</button>
+</div>
+
+<!-- MODAL MODIFICAR -->
+<div id="modalModificar" class="modal">
+    <div class="modal-content">
+        <h3 style="color: var(--oro); margin:0 0 10px;">✏️ Modificar nombre(s)</h3>
+        <p style="font-size:12px; color:#94a3b8;">Escribe el nombre para asignar a las casillas seleccionadas</p>
+        <textarea id="modalNombreInput" rows="3" placeholder="Ejemplo:&#10;YULI"></textarea>
+        <div style="margin: 5px 0;">
+            <input type="text" id="buscarSugerenciaModal" placeholder="Buscar nombre en caja..." oninput="filtrarSugerenciasModal()">
+            <div id="sugerenciasModalList" class="sugerencias-list"></div>
+        </div>
+        <div class="modal-buttons">
+            <button style="background:#10b981; color:white;" onclick="aplicarModificacionMultiple()">Aplicar</button>
+            <button style="background:#ef4444; color:white;" onclick="cerrarModal()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL RONDAS POR JUGADOR -->
+<div id="modalRondas" class="modal">
+    <div class="modal-content">
+        <h3 style="color: var(--oro);">📊 RONDAS POR JUGADOR</h3>
+        <textarea id="rondasTextarea" rows="8" placeholder="DAVID: 4"></textarea>
+        <div class="ronda-nota" style="margin-bottom: 10px;">
+            📌 Las rondas se acumulan por jugador
+        </div>
+        <div class="modal-buttons">
+            <button class="btn-verde" onclick="guardarRondas()">💾 GUARDAR</button>
+            <button class="btn-rojo" onclick="cerrarModalRondas()">❌ CERRAR</button>
+            <button class="btn-naranja" onclick="reiniciarRondas()">🔄 REINICIAR</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL RANKING PUNTOS -->
+<div id="modalPuntos" class="modal">
+    <div class="modal-content">
+        <h3 style="color: var(--oro);">🏆 RANKING (PUNTOS)</h3>
+        
+        <div class="ranking-dropdown-container" id="rankingDropdownContainer">
+            <button class="ranking-btn-modal" onclick="toggleRankingDropdown()">
+                <span id="tramoSeleccionadoLabel">📊 Seleccionar tramo</span>
+                <span class="btn-arrow">▼</span>
+            </button>
+            <div class="ranking-dropdown-modal" id="rankingDropdown">
+                <div class="ranking-item-modal" onclick="seleccionarTramoRanking(1)">1-20 (1 RONDA GRATIS)</div>
+                <div class="ranking-item-modal" onclick="seleccionarTramoRanking(2)">21-40 (2 RONDA GRATIS)</div>
+                <div class="ranking-item-modal" onclick="seleccionarTramoRanking(3)">41-60 (3 RONDA GRATIS)</div>
+                <div class="ranking-item-modal" onclick="seleccionarTramoRanking(4)">61-80 (4 RONDA GRATIS)</div>
+                <div class="ranking-item-modal" onclick="seleccionarTramoRanking(5)">81-100 (5 RONDA GRATIS)</div>
+                <div class="ranking-item-modal total" onclick="seleccionarTramoRanking('total')">TOTAL</div>
+                <div class="ranking-item-modal afuera" onclick="seleccionarTramoRanking('afuera')">🚫 AFUERA</div>
+            </div>
+        </div>
+
+        <div id="puntosDisplay" style="background:#050811; border-radius: 8px; padding: 12px; min-height: 150px; max-height: 300px; overflow-y: auto; border: 1px solid #334155;">
+            Selecciona un tramo en el menú desplegable
+        </div>
+        
+        <div class="ronda-nota" style="margin-top: 10px;">
+            📌 Apuntarse: +1 pto | Ganador 1: +3 ptos | Ganador 2+: +2 ptos
+        </div>
+        <div class="modal-buttons" style="margin-top: 12px;">
+            <button class="btn-verde" onclick="guardarPuntosTramos()">💾 GUARDAR</button>
+            <button class="btn-rojo" onclick="cerrarModalPuntos()">❌ CERRAR</button>
+            <button class="btn-naranja" onclick="reiniciarTodosLosPuntos()">🔄 REINICIAR</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL GANADORES DE RONDAS -->
+<div id="modalGanadores" class="modal">
+    <div class="modal-content">
+        <h3 style="color: var(--oro);">🏆 GANADORES DE RONDAS</h3>
+        <textarea id="ganadoresTextarea" rows="12" placeholder="RONDA 1&#10;PREMIO 1 #5 --- DAVID"></textarea>
+        <div class="modal-buttons" style="margin-top: 12px;">
+            <button class="btn-verde" onclick="guardarGanadores()">💾 GUARDAR</button>
+            <button class="btn-rojo" onclick="cerrarModalGanadores()">❌ CERRAR</button>
+            <button class="btn-naranja" onclick="limpiarGanadores()">🔄 LIMPIAR</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ASIGNAR AL AZAR -->
+<div id="modalRuleta" class="modal">
+    <div class="modal-content" style="max-width: 500px;">
+        <h3 style="color: var(--oro); text-align: center; margin: 0 0 10px;">🎲 ASIGNAR NÚMEROS GRATIS AL AZAR</h3>
+        
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 12px;">
+            <select id="selectTramoRuletaModal" style="padding: 10px 16px; border-radius: 8px; background: #050811; color: #fff; border: 2px solid var(--oro); font-size: 14px; font-weight: 800; flex: 1; min-width: 150px;">
+                <option value="1">1-20 (1 RONDA GRATIS)</option>
+                <option value="2" selected>21-40 (2 RONDA GRATIS)</option>
+                <option value="3">41-60 (3 RONDA GRATIS)</option>
+                <option value="4">61-80 (4 RONDA GRATIS)</option>
+                <option value="5">81-100 (5 RONDA GRATIS)</option>
+            </select>
+            <button id="btnAsignarRuletaModal" style="background: var(--oro); color: #0f172a; padding: 10px 20px; border-radius: 8px; border: none; font-weight: 900; font-size: 14px; cursor: pointer;">🎲 ASIGNAR AL AZAR</button>
+        </div>
+        
+        <div id="resultadoRuletaModal" style="background: #050811; border-radius: 8px; padding: 12px; min-height: 80px; border: 1px solid #334155; font-size: 14px; max-height: 300px; overflow-y: auto;">
+            <p style="color: #94a3b8; text-align: center; margin: 0;">Presiona el botón para asignar números</p>
+        </div>
+        
+        <div style="font-size: 11px; color: #94a3b8; text-align: center; margin-top: 8px;">
+            📌 1er lugar: 3 números | 2do lugar: 2 números | 3ro al 12vo: 1 número
+        </div>
+        
+        <div class="modal-buttons" style="margin-top: 12px;">
+            <button class="btn-rojo" onclick="cerrarModalRuleta()" style="width: 100%;">❌ CERRAR</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // =========================================================================
+    // CONEXIÓN AL FIREBASE ACTUAL COMPARTIDO CON ADMIN, BINGO Y MAZO
+    // =========================================================================
+    const firebaseConfig = {
+        apiKey: "AIzaSyBgH2Bi3ihJLhSM6NVTM_r5WzNv3OlAypc",
+        authDomain: "bingo-tik-tok.firebaseapp.com",
+        databaseURL: "https://bingo-tik-tok-default-rtdb.firebaseio.com",
+        projectId: "bingo-tik-tok",
+        storageBucket: "bingo-tik-tok.firebasestorage.app",
+        messagingSenderId: "264287384202",
+        appId: "1:264287384202:web:f1b66815e24a88fcda7373",
+        measurementId: "G-51121E4MBR"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const anotarseRef = db.ref('bingo/anotarse');
+
+    // Valor dinámico por casilla / puesto: $3.000 (3 en miles) o $1.500 (1.5 en miles)
+    let valorCasillaPesos = 3000;
+    let COSTO_POR_CASILLA_MILES = 3;
+
+    function actualizarUIValorCasilla(valorPesos) {
+        const v = Number(valorPesos) === 1500 ? 1500 : 3000;
+        valorCasillaPesos = v;
+        COSTO_POR_CASILLA_MILES = v / 1000;
+        const textoPrecio = '$' + v.toLocaleString('es-CO');
+        const otroPrecio = v === 3000 ? '$1.500' : '$3.000';
+
+        const pill = document.getElementById('pillValorCasilla');
+        if (pill) {
+            pill.textContent = `💵 VALOR CASILLA: ${textoPrecio}`;
+            pill.style.cursor = config.admin ? 'pointer' : 'default';
+        }
+        const btnPagar = document.getElementById('btnPagarCasilla');
+        if (btnPagar) {
+            btnPagar.textContent = `💰 PAGAR (${textoPrecio})`;
+        }
+        const btnToggle = document.getElementById('btnCambiarValorPuesto');
+        if (btnToggle) {
+            btnToggle.textContent = `💲 PUESTO: ${textoPrecio} (CAMBIAR A ${otroPrecio})`;
+        }
+    }
+
+    window.alternarValorCasilla = async () => {
+        const nuevoValor = valorCasillaPesos === 3000 ? 1500 : 3000;
+        actualizarUIValorCasilla(nuevoValor);
+        await anotarseRef.update({ valor_casilla: nuevoValor });
+    };
+
+    let datos = [];
+    let historial = [];
+    let seleccionados = [];
+    let config = { admin: false, bloqueado: false };
+    let modoVerificacion = false;
+    let numeroRonda = 1;
+    let totalCartonesActual = 15;
+    let nombresFamiliasTablero = [];
+
+    // Premios dinámicos sincronizados desde bingo/configuracion/premios (Admin.html)
+    let premiosAdmin = [];
+
+    let rondasPorJugador = {};
+    let puntosPorTramo = {};
+    let historialGanadores = [];
+    let numerosSalidos = { bingos: [], ruletas: [] };
+    let pendingUpdate = false;
+    let tramoActualEditando = null;
+
+    // Cronómetro
+    let cronometroActivo = false;
+    let cronometroIntervalo = null;
+    let segundosCronometro = 12;
+
+    function crearCartonesPorDefecto(cantidad = 15, lineasPorCarton = 2) {
+        return Array.from({ length: cantidad }, () => ({
+            lineas: Array.from({ length: lineasPorCarton }, () => ({ nombre: "", estado: "libre" }))
+        }));
+    }
+
+    function normalizarCartones(rawCartones, cantidadEsperada = totalCartonesActual) {
+        const lista = Array.isArray(rawCartones)
+            ? rawCartones
+            : (rawCartones && typeof rawCartones === 'object' ? Object.values(rawCartones) : []);
+
+        const numLineasBase = (lista[0] && lista[0].lineas)
+            ? (Array.isArray(lista[0].lineas) ? lista[0].lineas.length : Object.values(lista[0].lineas).length)
+            : 2;
+        const lineasCount = Math.max(1, numLineasBase);
+
+        const resultado = [];
+        for (let i = 0; i < cantidadEsperada; i++) {
+            const c = lista[i];
+            if (c && c.lineas) {
+                const rawLineas = Array.isArray(c.lineas) ? c.lineas : Object.values(c.lineas);
+                const lineasLimpias = rawLineas.map(l => ({
+                    nombre: (l && l.nombre) ? String(l.nombre).toUpperCase().trim() : "",
+                    estado: (l && l.estado) ? String(l.estado) : "libre"
+                }));
+                while (lineasLimpias.length < lineasCount) {
+                    lineasLimpias.push({ nombre: "", estado: "libre" });
+                }
+                resultado.push({ lineas: lineasLimpias });
+            } else {
+                resultado.push({
+                    lineas: Array.from({ length: lineasCount }, () => ({ nombre: "", estado: "libre" }))
+                });
+            }
+        }
+        return resultado;
+    }
+
+    function limpiarNombre(nombre) {
+        return String(nombre || '').replace(/^[\d]+[\.\-\)\s]+/, '').trim();
+    }
+
+    function extraerValorEnMilesDesdePremio(premioTexto) {
+        if (!premioTexto) return 0;
+        const soloDigitos = String(premioTexto).replace(/[^0-9]/g, '');
+        if (!soloDigitos) return 0;
+        const num = parseInt(soloDigitos, 10);
+        if (isNaN(num) || num <= 0) return 0;
+        if (num >= 1000) {
+            return Number((num / 1000).toFixed(2));
+        }
+        return num;
+    }
+
+    function obtenerListaPremiosActivos() {
+        if (Array.isArray(premiosAdmin) && premiosAdmin.length > 0) {
+            return premiosAdmin;
+        }
+        return ["PREMIO 1", "PREMIO 2"];
+    }
+
+    // Renderiza la barra inferior de premios y los cuadros dinámicos en CONTROL DE GANADORES
+    function renderizarPremiosYCuadrosGanadores() {
+        const lista = obtenerListaPremiosActivos();
+
+        // 1. Actualizar píldoras de premios
+        const headerList = document.getElementById('premiosHeaderList');
+        if (headerList) {
+            headerList.innerHTML = lista.map((p, idx) => `
+                <span class="pill-premio">🏆 PREMIO ${idx + 1}: ${p}</span>
+            `).join('');
+        }
+
+        // 2. Actualizar cuadros de inputs en CONTROL DE GANADORES (MULTI LÍNEA) en orden
+        const container = document.getElementById('contenedorInputsGanadores');
+        if (!container) return;
+
+        const valoresPrevios = {};
+        container.querySelectorAll('input.input-ganador-orden').forEach((inp, i) => {
+            valoresPrevios[i] = inp.value;
+        });
+
+        container.innerHTML = lista.map((premioStr, idx) => {
+            const valPrevio = valoresPrevios[idx] !== undefined ? valoresPrevios[idx] : '';
+            return `
+                <div class="bloque-input">
+                    <div class="bloque-input-info">
+                        <span class="bloque-input-label">GANADOR ${idx + 1} #:</span>
+                        <span class="bloque-input-premio">🎁 Premio ${idx + 1}: ${premioStr}</span>
+                    </div>
+                    <input type="number"
+                           class="input-ganador-orden"
+                           data-orden="${idx}"
+                           id="numGanador_${idx}"
+                           min="1"
+                           max="${totalCartonesActual}"
+                           value="${valPrevio}"
+                           placeholder="#">
+                </div>
+            `;
+        }).join('');
+    }
+
+    // ==============================================
+    // CRONÓMETRO CONFIGURABLE
+    // ==============================================
+    window.guardarSegundosCronometro = () => {
+        const input = document.getElementById("cronometroSegundos");
+        let valor = parseInt(input.value, 10);
+        if (isNaN(valor) || valor < 0) valor = 0;
+        if (valor > 60) valor = 60;
+        segundosCronometro = valor;
+        input.value = valor;
+        alert("✅ Segundos guardados: " + valor + (valor === 0 ? " (CRONÓMETRO DESACTIVADO)" : ""));
+        anotarseRef.update({ segundosCronometro: segundosCronometro });
+    };
+
+    function iniciarCronometroOptimizado() {
+        if (segundosCronometro === 0) return;
+
+        if (cronometroIntervalo) {
+            clearInterval(cronometroIntervalo);
+            cronometroIntervalo = null;
+        }
+
+        cronometroActivo = true;
+        const inicio = Date.now();
+        const duracion = segundosCronometro;
+
+        const overlay = document.getElementById('cronometroOverlay');
+        const numeroElem = document.getElementById('cronometroNumero');
+        const barraElem = document.getElementById('cronometroBarra');
+
+        overlay.classList.add('visible');
+
+        anotarseRef.update({
+            cronometroActivo: true,
+            cronometroInicio: inicio,
+            cronometroDuracion: duracion
+        });
+
+        function actualizarCronometro() {
+            const ahora = Date.now();
+            const tiempoTranscurrido = Math.floor((ahora - inicio) / 1000);
+            const segundosRestantes = Math.max(0, duracion - tiempoTranscurrido);
+
+            numeroElem.textContent = segundosRestantes;
+            barraElem.style.width = (segundosRestantes / duracion * 100) + '%';
+            actualizarColoresCronometro(segundosRestantes, numeroElem, barraElem);
+
+            if (segundosRestantes <= 0) {
+                clearInterval(cronometroIntervalo);
+                cronometroIntervalo = null;
+                cronometroActivo = false;
+                overlay.classList.remove('visible');
+
+                anotarseRef.update({
+                    cronometroActivo: false,
+                    cronometroInicio: null,
+                    cronometroDuracion: 0
+                });
+            }
+        }
+
+        actualizarCronometro();
+        cronometroIntervalo = setInterval(actualizarCronometro, 500);
+    }
+
+    function actualizarColoresCronometro(tiempo, numeroElem, barraElem) {
+        if (tiempo > 8) {
+            numeroElem.style.color = '#ef4444';
+            barraElem.style.background = 'linear-gradient(90deg, #ef4444, #b91c1c)';
+        } else if (tiempo > 4) {
+            numeroElem.style.color = '#fbbf24';
+            barraElem.style.background = 'linear-gradient(90deg, #fbbf24, #d97706)';
+        } else {
+            numeroElem.style.color = '#10b981';
+            barraElem.style.background = 'linear-gradient(90deg, #10b981, #059669)';
+        }
+    }
+
+    function restaurarCronometro(data) {
+        if (segundosCronometro === 0) {
+            cronometroActivo = false;
+            document.getElementById('cronometroOverlay').classList.remove('visible');
+            return false;
+        }
+
+        if (data && data.cronometroActivo && data.cronometroInicio) {
+            const ahora = Date.now();
+            const tiempoTranscurrido = Math.floor((ahora - data.cronometroInicio) / 1000);
+            const segundosRestantes = Math.max(0, segundosCronometro - tiempoTranscurrido);
+
+            if (segundosRestantes > 0) {
+                cronometroActivo = true;
+                const overlay = document.getElementById('cronometroOverlay');
+                const numeroElem = document.getElementById('cronometroNumero');
+                const barraElem = document.getElementById('cronometroBarra');
+
+                overlay.classList.add('visible');
+                numeroElem.textContent = segundosRestantes;
+                barraElem.style.width = (segundosRestantes / segundosCronometro * 100) + '%';
+                actualizarColoresCronometro(segundosRestantes, numeroElem, barraElem);
+
+                if (cronometroIntervalo) {
+                    clearInterval(cronometroIntervalo);
+                    cronometroIntervalo = null;
+                }
+
+                const inicio = data.cronometroInicio;
+                cronometroIntervalo = setInterval(() => {
+                    const ahora2 = Date.now();
+                    const tiempoTranscurrido2 = Math.floor((ahora2 - inicio) / 1000);
+                    const segundosRestantes2 = Math.max(0, segundosCronometro - tiempoTranscurrido2);
+
+                    numeroElem.textContent = segundosRestantes2;
+                    barraElem.style.width = (segundosRestantes2 / segundosCronometro * 100) + '%';
+                    actualizarColoresCronometro(segundosRestantes2, numeroElem, barraElem);
+
+                    if (segundosRestantes2 <= 0) {
+                        clearInterval(cronometroIntervalo);
+                        cronometroIntervalo = null;
+                        cronometroActivo = false;
+                        overlay.classList.remove('visible');
+
+                        anotarseRef.update({
+                            cronometroActivo: false,
+                            cronometroInicio: null,
+                            cronometroDuracion: 0
+                        });
+                    }
+                }, 500);
+                return true;
+            } else {
+                cronometroActivo = false;
+                document.getElementById('cronometroOverlay').classList.remove('visible');
+                anotarseRef.update({
+                    cronometroActivo: false,
+                    cronometroInicio: null,
+                    cronometroDuracion: 0
+                });
+            }
+        }
+        return false;
+    }
+
+    // ==============================================
+    // RANKING Y PUNTOS POR TRAMO
+    // ==============================================
+    window.toggleRankingDropdown = () => {
+        const container = document.getElementById('rankingDropdownContainer');
+        container.classList.toggle('active');
+    };
+
+    function calcularAfuera() {
+        const todosLosJugadores = new Set();
+        for (let clave in puntosPorTramo) {
+            for (let nombre in puntosPorTramo[clave]) {
+                todosLosJugadores.add(nombre);
+            }
+        }
+
+        const jugadoresQueEntran = new Set();
+        for (let t = 1; t <= 5; t++) {
+            const clave = `tramo_${t}`;
+            const data = puntosPorTramo[clave] || {};
+            const sorted = Object.entries(data).sort((a, b) => b[1] - a[1]);
+            const top12 = sorted.slice(0, 12);
+            top12.forEach(([nombre]) => jugadoresQueEntran.add(nombre));
+        }
+
+        const afuera = [];
+        todosLosJugadores.forEach(nombre => {
+            if (!jugadoresQueEntran.has(nombre)) {
+                let totalPuntos = 0;
+                for (let clave in puntosPorTramo) {
+                    if (puntosPorTramo[clave][nombre]) {
+                        totalPuntos += puntosPorTramo[clave][nombre];
+                    }
+                }
+                afuera.push({ nombre, puntos: totalPuntos });
+            }
+        });
+        afuera.sort((a, b) => b.puntos - a.puntos);
+        return afuera;
+    }
+
+    window.seleccionarTramoRanking = (tramo) => {
+        document.getElementById('rankingDropdownContainer').classList.remove('active');
+
+        const label = document.getElementById('tramoSeleccionadoLabel');
+        const display = document.getElementById('puntosDisplay');
+
+        if (tramo === 'afuera') {
+            label.textContent = '🚫 AFUERA';
+            tramoActualEditando = null;
+
+            const afuera = calcularAfuera();
+            if (afuera.length === 0) {
+                display.innerHTML = `<div style="color:#34d399; text-align:center; padding:20px; font-size:15px;">✅ ¡Todos los jugadores han entrado al menos una vez!</div>`;
+            } else {
+                let texto = "🚫 JUGADORES FUERA\n\n";
+                afuera.forEach(item => {
+                    texto += `${item.nombre}: ${item.puntos} pts\n`;
+                });
+                display.innerHTML = `<textarea id="puntosTextarea" rows="16" style="width:100%; background:#000; color:#fff; border:1px solid #334155; border-radius:8px; padding:10px; font-family:monospace; font-size:14px; text-transform:uppercase;">${texto.trim()}</textarea>`;
+            }
+            return;
+        }
+
+        if (tramo === 'total') {
+            label.textContent = '📊 TOTAL';
+        } else {
+            const nombres = {
+                1: '📊 1-20 (1 RONDA GRATIS)',
+                2: '📊 21-40 (2 RONDA GRATIS)',
+                3: '📊 41-60 (3 RONDA GRATIS)',
+                4: '📊 61-80 (4 RONDA GRATIS)',
+                5: '📊 81-100 (5 RONDA GRATIS)'
+            };
+            label.textContent = nombres[tramo];
+        }
+
+        tramoActualEditando = tramo;
+        mostrarPuntosTextarea(tramo);
+    };
+
+    document.addEventListener('click', function(event) {
+        const container = document.getElementById('rankingDropdownContainer');
+        if (container && !container.contains(event.target)) {
+            container.classList.remove('active');
+        }
+    });
+
+    function getTramoActual() {
+        if (numeroRonda <= 20) return 1;
+        else if (numeroRonda <= 40) return 2;
+        else if (numeroRonda <= 60) return 3;
+        else if (numeroRonda <= 80) return 4;
+        else return 5;
+    }
+
+    function getNombreTramo(tramo) {
+        return { 1: "1-20", 2: "21-40", 3: "41-60", 4: "61-80", 5: "81-100" }[tramo] || `Tramo ${tramo}`;
+    }
+
+    function getClaveTramo(tramo) {
+        return `tramo_${tramo}`;
+    }
+
+    function getPuntosTramo(tramo) {
+        return puntosPorTramo[getClaveTramo(tramo)] || {};
+    }
+
+    function getTotalPuntos() {
+        const total = {};
+        for (let clave in puntosPorTramo) {
+            for (let nombre in puntosPorTramo[clave]) {
+                total[nombre] = (total[nombre] || 0) + puntosPorTramo[clave][nombre];
+            }
+        }
+        return total;
+    }
+
+    window.mostrarModalPuntos = () => {
+        const tramo = getTramoActual();
+        tramoActualEditando = tramo;
+        document.getElementById("modalPuntos").style.display = "flex";
+
+        const label = document.getElementById('tramoSeleccionadoLabel');
+        const nombres = {
+            1: '📊 1-20 (1 RONDA GRATIS)',
+            2: '📊 21-40 (2 RONDA GRATIS)',
+            3: '📊 41-60 (3 RONDA GRATIS)',
+            4: '📊 61-80 (4 RONDA GRATIS)',
+            5: '📊 81-100 (5 RONDA GRATIS)'
+        };
+        label.textContent = nombres[tramo] || '📊 Seleccionar tramo';
+        mostrarPuntosTextarea(tramo);
+    };
+
+    window.cerrarModalPuntos = () => {
+        document.getElementById("modalPuntos").style.display = "none";
+        tramoActualEditando = null;
+    };
+
+    function mostrarPuntosTextarea(tramo) {
+        const display = document.getElementById("puntosDisplay");
+        const data = tramo === 'total' ? getTotalPuntos() : getPuntosTramo(tramo);
+        const sorted = Object.entries(data).sort((a,b) => b[1] - a[1]);
+
+        if (sorted.length === 0) {
+            const texto = `No hay puntos registrados en ${tramo === 'total' ? 'TOTAL' : getNombreTramo(tramo)}`;
+            display.innerHTML = `<div style="color:#94a3b8; text-align:center; padding:20px;">${texto}</div>`;
+            return;
+        }
+
+        let contenido = "";
+        sorted.forEach(([nombre, puntos], index) => {
+            const puesto = index + 1;
+            contenido += `${puesto}. ${nombre}: ${puntos}\n`;
+            if (index === 11) {
+                contenido += `-------------\n🚫 AFUERA\n`;
+            }
+        });
+
+        display.innerHTML = `<textarea id="puntosTextarea" rows="16" style="width:100%; background:#000; color:#fff; border:1px solid #334155; border-radius:8px; padding:10px; font-family:monospace; font-size:14px; text-transform:uppercase;">${contenido.trim()}</textarea>`;
+    }
+
+    window.guardarPuntosTramos = async () => {
+        const textarea = document.getElementById("puntosTextarea");
+        if (!textarea) {
+            alert("No hay datos para guardar");
+            return;
+        }
+        if (tramoActualEditando === null || tramoActualEditando === 'afuera' || tramoActualEditando === 'total') {
+            alert("Selecciona un tramo específico (1 al 5) para guardar cambios manuales");
+            return;
+        }
+
+        const lines = textarea.value.split('\n');
+        const nuevosPuntos = {};
+        lines.forEach(line => {
+            line = line.trim();
+            if (line.includes(':')) {
+                const partes = line.split(':');
+                let nombre = limpiarNombre(partes[0].trim().toUpperCase());
+                const valor = parseInt(partes[1].trim(), 10);
+                if (nombre && !isNaN(valor) && valor >= 0) {
+                    nuevosPuntos[nombre] = valor;
+                }
+            }
+        });
+
+        const clave = getClaveTramo(tramoActualEditando);
+        puntosPorTramo[clave] = nuevosPuntos;
+        await anotarseRef.update({ puntosPorTramo: puntosPorTramo });
+        alert("Puntos guardados ✅");
+        cerrarModalPuntos();
+        actualizarStats();
+    };
+
+    window.reiniciarTodosLosPuntos = async () => {
+        if (confirm("⚠️ ¿Estás seguro? Esto borrará TODOS los puntos de TODOS los tramos.")) {
+            puntosPorTramo = {};
+            await anotarseRef.update({ puntosPorTramo: {} });
+            alert("✅ Todos los puntos han sido reiniciados");
+            const tramoActual = getTramoActual();
+            tramoActualEditando = tramoActual;
+            mostrarPuntosTextarea(tramoActual);
+            actualizarStats();
+        }
+    };
+
+    window.reiniciarTodoElJuego = async () => {
+        if (!confirm("⚠️⚠️⚠️ ¿REINICIAR TODO EL JUEGO?\n\nEsto reiniciará:\n• Ronda a 1\n• Rondas por jugador a 0\n• Ranking de puntos a 0\n• Ganadores de rondas (vacío)\n• Números salidos (vacío)\n\n¿Estás seguro?")) {
+            return;
+        }
+        if (!confirm("⚠️⚠️⚠️ ÚLTIMA ADVERTENCIA ⚠️⚠️⚠️\n\n¿Confirmas el reinicio total?")) {
+            return;
+        }
+
+        try {
+            numeroRonda = 1;
+            rondasPorJugador = {};
+            puntosPorTramo = {};
+            historialGanadores = [];
+            numerosSalidos = { bingos: [], ruletas: [] };
+            seleccionados = [];
+            document.getElementById("msgLineas").innerText = "";
+
+            await anotarseRef.update({
+                numero_ronda: 1,
+                rondasPorJugador: {},
+                puntosPorTramo: {},
+                historialGanadores: [],
+                numerosSalidos: { bingos: [], ruletas: [] }
+            });
+
+            alert("✅ ¡Juego reiniciado completamente!");
+            actualizarStats();
+        } catch (error) {
+            alert("❌ Error al reiniciar: " + error.message);
+        }
+    };
+
+    // ============================================================
+    // HISTORIAL DE GANADORES Y NÚMEROS SALIDOS
+    // ============================================================
+    async function guardarGanadoresEnHistorialMulti(listaGanadoresRonda) {
+        if (!Array.isArray(historialGanadores)) historialGanadores = [];
+        const detalleTexto = listaGanadoresRonda.map((g, i) => `Premio ${i + 1} (#${g.numCarton}) --- ${g.nombres.join(', ')}`).join(' | ');
+        historialGanadores.push({
+            ronda: numeroRonda,
+            detalle: detalleTexto,
+            bingoNum: listaGanadoresRonda[0] ? listaGanadoresRonda[0].numCarton : 0,
+            bingoNombre: listaGanadoresRonda[0] ? listaGanadoresRonda[0].nombres.join(', ') : '',
+            ruletaNum: listaGanadoresRonda[1] ? listaGanadoresRonda[1].numCarton : 0,
+            ruletaNombre: listaGanadoresRonda[1] ? listaGanadoresRonda[1].nombres.join(', ') : ''
+        });
+
+        if (!numerosSalidos || typeof numerosSalidos !== 'object') {
+            numerosSalidos = { bingos: [], ruletas: [] };
+        }
+        if (!Array.isArray(numerosSalidos.bingos)) numerosSalidos.bingos = [];
+        if (!Array.isArray(numerosSalidos.ruletas)) numerosSalidos.ruletas = [];
+
+        if (listaGanadoresRonda[0]) numerosSalidos.bingos.push(listaGanadoresRonda[0].numCarton);
+        if (listaGanadoresRonda[1]) numerosSalidos.ruletas.push(listaGanadoresRonda[1].numCarton);
+
+        if (historialGanadores.length > 100) {
+            historialGanadores = historialGanadores.slice(-100);
+        }
+        await anotarseRef.update({
+            historialGanadores: historialGanadores,
+            numerosSalidos: numerosSalidos
+        });
+    }
+
+    window.mostrarModalGanadores = () => {
+        const textarea = document.getElementById("ganadoresTextarea");
+        let texto = "";
+        if (historialGanadores && historialGanadores.length > 0) {
+            historialGanadores.forEach(item => {
+                texto += `RONDA ${item.ronda}\n`;
+                if (item.detalle) {
+                    texto += `${item.detalle}\n\n`;
+                } else {
+                    texto += `Premio 1 #${item.bingoNum} --- ${item.bingoNombre}\n`;
+                    if (item.ruletaNum) texto += `Premio 2 #${item.ruletaNum} --- ${item.ruletaNombre}\n`;
+                    texto += `\n`;
+                }
+            });
+        } else {
+            texto = "No hay ganadores registrados aún.";
+        }
+        textarea.value = texto.trim();
+        document.getElementById("modalGanadores").style.display = "flex";
+    };
+
+    window.cerrarModalGanadores = () => {
+        document.getElementById("modalGanadores").style.display = "none";
+    };
+
+    window.guardarGanadores = async () => {
+        const texto = document.getElementById("ganadoresTextarea").value.trim();
+        const bloques = texto.split(/\n\s*\n/);
+        const nuevos = [];
+        bloques.forEach((b, idx) => {
+            const lineas = b.split('\n').map(l => l.trim()).filter(Boolean);
+            if (lineas.length >= 2) {
+                const rondaMatch = lineas[0].match(/\d+/);
+                const rNum = rondaMatch ? parseInt(rondaMatch[0], 10) : (idx + 1);
+                nuevos.push({
+                    ronda: rNum,
+                    detalle: lineas.slice(1).join(' | ')
+                });
+            }
+        });
+        historialGanadores = nuevos;
+        await anotarseRef.update({ historialGanadores: historialGanadores });
+        alert("✅ Ganadores guardados");
+    };
+
+    window.limpiarGanadores = async () => {
+        if (confirm("⚠️ ¿Borrar TODO el historial de ganadores?")) {
+            historialGanadores = [];
+            await anotarseRef.update({ historialGanadores: [] });
+            document.getElementById("ganadoresTextarea").value = "No hay ganadores registrados aún.";
+            alert("✅ Historial de ganadores limpiado");
+        }
+    };
+
+    window.mostrarModalNumeros = () => {
+        const textarea = document.getElementById("numerosTextarea");
+        let texto = "";
+        const bList = (numerosSalidos && Array.isArray(numerosSalidos.bingos)) ? numerosSalidos.bingos : [];
+        const rList = (numerosSalidos && Array.isArray(numerosSalidos.ruletas)) ? numerosSalidos.ruletas : [];
+        texto += `PREMIO 1: ${bList.length > 0 ? bList.join(', ') : 'Ninguno aún'}\n`;
+        texto += `PREMIO 2+: ${rList.length > 0 ? rList.join(', ') : 'Ninguno aún'}`;
+        textarea.value = texto;
+        document.getElementById("modalNumeros").style.display = "flex";
+    };
+
+    window.cerrarModalNumeros = () => {
+        document.getElementById("modalNumeros").style.display = "none";
+    };
+
+    window.guardarNumeros = async () => {
+        const texto = document.getElementById("numerosTextarea").value;
+        const lines = texto.split('\n');
+        const bingos = [];
+        const ruletas = [];
+
+        lines.forEach((line, idx) => {
+            const partes = line.split(':');
+            if (partes.length >= 2) {
+                partes[1].split(',').forEach(n => {
+                    const num = parseInt(n.trim(), 10);
+                    if (!isNaN(num)) {
+                        if (idx === 0) bingos.push(num);
+                        else ruletas.push(num);
+                    }
+                });
+            }
+        });
+
+        numerosSalidos = { bingos, ruletas };
+        await anotarseRef.update({ numerosSalidos: numerosSalidos });
+        alert("✅ Números guardados");
+    };
+
+    window.limpiarNumeros = async () => {
+        if (confirm("⚠️ ¿Borrar TODOS los números salidos?")) {
+            numerosSalidos = { bingos: [], ruletas: [] };
+            await anotarseRef.update({ numerosSalidos: numerosSalidos });
+            document.getElementById("numerosTextarea").value = "PREMIO 1: Ninguno aún\nPREMIO 2+: Ninguno aún";
+            alert("✅ Números limpiados");
+        }
+    };
+
+    // ============================================================
+    // RONDAS POR JUGADOR
+    // ============================================================
+    function rondasToText() {
+        let texto = "";
+        for (let [nombre, rondas] of Object.entries(rondasPorJugador).sort((a,b) => b[1] - a[1])) {
+            texto += `${nombre}: ${rondas}\n`;
+        }
+        return texto.trim();
+    }
+
+    function textToRondas(texto) {
+        const nuevas = {};
+        texto.toUpperCase().split('\n').forEach(linea => {
+            linea = linea.trim();
+            if (linea.includes(':')) {
+                let partes = linea.split(':');
+                let nombre = partes[0].trim();
+                let valor = parseInt(partes[1].trim(), 10);
+                if (nombre && !isNaN(valor) && valor > 0) nuevas[nombre] = valor;
+            }
+        });
+        return nuevas;
+    }
+
+    window.mostrarModalRondas = () => {
+        document.getElementById("rondasTextarea").value = rondasToText();
+        document.getElementById("modalRondas").style.display = "flex";
+    };
+    window.cerrarModalRondas = () => { document.getElementById("modalRondas").style.display = "none"; };
+    window.guardarRondas = async () => {
+        const nuevas = textToRondas(document.getElementById("rondasTextarea").value);
+        rondasPorJugador = nuevas;
+        await anotarseRef.update({ rondasPorJugador: nuevas });
+        alert("Rondas guardadas ✅");
+        cerrarModalRondas();
+        actualizarStats();
+    };
+    window.reiniciarRondas = async () => {
+        if (confirm("⚠️ ¿Borrar TODAS las rondas por jugador?")) {
+            rondasPorJugador = {};
+            await anotarseRef.update({ rondasPorJugador: {} });
+            alert("✅ Rondas reiniciadas");
+            document.getElementById("rondasTextarea").value = "";
+            actualizarStats();
+        }
+    };
+
+    window.reiniciarRondaACero = async () => {
+        if (confirm("⚠️ ¿REINICIAR EL CONTADOR DE RONDA A 1?")) {
+            numeroRonda = 1;
+            await anotarseRef.update({ numero_ronda: 1 });
+            actualizarStats();
+            alert("Ronda reiniciada a 1 ✅");
+        }
+    };
+
+    // ============================================================
+    // DIBUJO DEL TABLERO Y ESTADÍSTICAS
+    // ============================================================
+    function ajustarTamanoTexto(elemento) {
+        if (!elemento) return;
+        elemento.style.fontSize = '';
+        elemento.style.whiteSpace = 'normal';
+        elemento.style.wordBreak = 'break-word';
+        let fontSize = 15;
+        elemento.style.fontSize = fontSize + 'px';
+        while ((elemento.scrollHeight > 58 || elemento.scrollWidth > elemento.clientWidth) && fontSize > 10) {
+            fontSize--;
+            elemento.style.fontSize = fontSize + 'px';
+        }
+    }
+
+    function obtenerTodosLosNombresConRepeticiones(numCarton) {
+        let idx = numCarton - 1;
+        if (idx < 0 || idx >= datos.length) return [];
+        const carton = datos[idx];
+        let lista = [];
+        for (let linea of (carton.lineas || [])) {
+            if (linea.nombre && linea.estado !== "libre" && linea.nombre.trim() !== "") {
+                lista.push(linea.nombre.trim());
+            }
+        }
+        return lista;
+    }
+
+    function obtenerSugerenciasDesdeCaja() {
+        const cajaRaw = document.getElementById("notas-caja").value;
+        const lineas = cajaRaw.split('\n');
+        const nombres = [];
+        lineas.forEach(l => {
+            const partes = l.split(':');
+            if (partes.length >= 2) {
+                let nom = partes[0].trim().toUpperCase();
+                if (nom) nombres.push(nom);
+            }
+        });
+        return [...new Set(nombres)].sort();
+    }
+
+    function actualizarCampoNombre() {
+        const input = document.getElementById("nombreUser");
+        if (config.bloqueado && !config.admin) {
+            input.disabled = true;
+            input.placeholder = "🔒 CERRADO - Solo administrador";
+        } else {
+            input.disabled = false;
+            input.placeholder = "ESCRIBE TU NOMBRE AQUÍ";
+        }
+    }
+
+    function actualizarStats() {
+        renderLiveBtn();
+        let lib = 0, res = 0, pag = 0;
+        datos.forEach(c => (c.lineas || []).forEach(l => {
+            if (l.estado === 'libre') lib++;
+            else if (l.estado === 'reservado') res++;
+            else pag++;
+        }));
+        document.getElementById("stats").innerHTML = `<span class="stats-libres">LIBRES: ${lib}</span> | <span class="stats-ocupados">RESERVADOS: ${res}</span> | <span class="stats-pagados">PAGADOS: ${pag}</span>`;
+
+        const rondaGrande = document.getElementById("rondaGrande");
+        if (rondaGrande) {
+            if (config.admin) {
+                rondaGrande.classList.remove('oculta');
+                rondaGrande.innerHTML = `🎰 RONDA ${numeroRonda} 🎰`;
+            } else {
+                rondaGrande.classList.add('oculta');
+            }
+        }
+    }
+
+    let liveBtnData = { imagen: '', enlace: '' };
+    function renderLiveBtn() {
+        const wrap = document.getElementById('liveBtnWrap');
+        if (!wrap) return;
+        const ok = !config.admin && liveBtnData.imagen;
+        wrap.style.display = ok ? 'block' : 'none';
+        if (ok) {
+            document.getElementById('liveBtnImg').src = liveBtnData.imagen;
+            const a = document.getElementById('liveBtnLink');
+            a.href = liveBtnData.enlace || '#';
+        }
+    }
+    window.guardarBotonLive = async () => {
+        const imagen = document.getElementById('liveImgUrl').value.trim();
+        const enlace = document.getElementById('liveLinkUrl').value.trim();
+        await anotarseRef.child('live_btn').set({ imagen, enlace });
+        alert('Botón del Live guardado ✅');
+    };
+    window.quitarBotonLive = async () => {
+        await anotarseRef.child('live_btn').remove();
+        document.getElementById('liveImgUrl').value = '';
+        document.getElementById('liveLinkUrl').value = '';
+    };
+    anotarseRef.child('live_btn').on('value', snap => {
+        const v = snap.val() || {};
+        liveBtnData = { imagen: v.imagen || '', enlace: v.enlace || '' };
+        const i = document.getElementById('liveImgUrl'), l = document.getElementById('liveLinkUrl');
+        if (i && document.activeElement !== i) i.value = liveBtnData.imagen;
+        if (l && document.activeElement !== l) l.value = liveBtnData.enlace;
+        renderLiveBtn();
+    });
+
+    let botonInvisibleActivo = false;
+    let familiasInteligentes = [];
+    let ultimaRondaVistaInteligente = null;
+
+    anotarseRef.child('cartas_inteligentes').on('value', snap => {
+        const val = snap.val();
+        if (val && typeof val === 'object') {
+            botonInvisibleActivo = Boolean(val.activo);
+            familiasInteligentes = Array.isArray(val.familias)
+                ? val.familias.map(Number).filter(n => !isNaN(n))
+                : [];
+        } else {
+            botonInvisibleActivo = false;
+            familiasInteligentes = [];
+        }
+        const chk = document.getElementById("chkBotonInvisible");
+        if (chk) chk.checked = botonInvisibleActivo;
+        if (datos.length > 0) dibujar();
+    });
+
+    anotarseRef.child('numero_ronda').on('value', snap => {
+        const r = snap.val() || 1;
+        if (ultimaRondaVistaInteligente !== null && r !== ultimaRondaVistaInteligente) {
+            familiasInteligentes = [];
+            anotarseRef.child('cartas_inteligentes').set({
+                activo: botonInvisibleActivo,
+                familias: [],
+                timestamp: Date.now()
+            });
+        }
+        ultimaRondaVistaInteligente = r;
+    });
+
+    window.toggleBotonInvisible = async (activo) => {
+        botonInvisibleActivo = Boolean(activo);
+        if (!botonInvisibleActivo) {
+            familiasInteligentes = [];
+        }
+        await anotarseRef.child('cartas_inteligentes').set({
+            activo: botonInvisibleActivo,
+            familias: familiasInteligentes,
+            timestamp: Date.now()
+        });
+        dibujar();
+    };
+
+    window.seleccionarNumeroInteligente = async (cIdx) => {
+        if (!config.admin || !botonInvisibleActivo) return;
+        const pos = familiasInteligentes.indexOf(cIdx);
+        if (pos > -1) {
+            familiasInteligentes.splice(pos, 1);
+        } else {
+            if (familiasInteligentes.length >= 3) familiasInteligentes.shift();
+            familiasInteligentes.push(cIdx);
+        }
+        await anotarseRef.child('cartas_inteligentes').set({
+            activo: botonInvisibleActivo,
+            familias: familiasInteligentes,
+            timestamp: Date.now()
+        });
+        dibujar();
+    };
+
+    function dibujar() {
+        const container = document.getElementById("tablero");
+        container.innerHTML = "";
+        datos.forEach((carton, cIdx) => {
+            const div = document.createElement("div");
+            div.className = "carton";
+            const textoFamilia = nombresFamiliasTablero[cIdx] ? nombresFamiliasTablero[cIdx] : (cIdx + 1).toString();
+            const esElegido = config.admin && botonInvisibleActivo && familiasInteligentes.includes(cIdx);
+            div.innerHTML = `<div class="carton-h" style="${config.admin && botonInvisibleActivo ? 'cursor:pointer;' : ''}"><span>${cIdx + 1}${esElegido ? ' ·' : ''}</span></div>`;
+            div.querySelector('.carton-h').onclick = () => seleccionarNumeroInteligente(cIdx);
+            (carton.lineas || []).forEach((linea, lIdx) => {
+                const lDiv = document.createElement("div");
+                lDiv.className = `linea ${linea.estado}`;
+                if (!linea.nombre || linea.nombre === "") lDiv.classList.add("libre");
+                if (seleccionados.some(s => s.c === cIdx && s.l === lIdx)) lDiv.classList.add("sel");
+                let displayText = (linea.nombre && linea.nombre !== "") ? linea.nombre : textoFamilia;
+                lDiv.innerText = displayText;
+                ajustarTamanoTexto(lDiv);
+                lDiv.onclick = () => manejarClick(cIdx, lIdx);
+                div.appendChild(lDiv);
+            });
+            container.appendChild(div);
+        });
+        const btnLupa = document.getElementById("btnLupaExterna");
+        btnLupa.innerText = modoVerificacion ? "✅" : "🔍";
+        btnLupa.style.background = modoVerificacion ? "#10b981" : "#0284c7";
+    }
+
+    function sincronizarResumenAnotadosEnFirebase(cartonesActualizados) {
+        // Bingo.html y Mezcla de cartas.html leen directamente bingo/anotarse/cartones
+        // No se realizan escrituras duplicadas para ahorrar recursos de Firebase
+    }
+
+    async function manejarClick(c, l) {
+        if (cronometroActivo || pendingUpdate) return;
+
+        const lineaActual = datos[c].lineas[l];
+        const nombreClick = lineaActual.nombre;
+
+        if (modoVerificacion && nombreClick && nombreClick !== "") {
+            seleccionados = [];
+            let listaCartones = [];
+            datos.forEach((carton, ci) => {
+                (carton.lineas || []).forEach((linea, li) => {
+                    if (linea.nombre === nombreClick) {
+                        seleccionados.push({ c: ci, l: li });
+                        listaCartones.push(ci + 1);
+                    }
+                });
+            });
+            document.getElementById("msgLineas").innerText = `${nombreClick}: ${seleccionados.length} línea(s) en [${listaCartones.join(", ")}]`;
+            dibujar();
+            return;
+        }
+
+        if (config.admin) {
+            const nombreInput = document.getElementById("nombreUser").value.trim().toUpperCase();
+            if (lineaActual.estado === "libre" && nombreInput !== "") {
+                pendingUpdate = true;
+                guardarHistorial();
+                try {
+                    const snap = await anotarseRef.child('cartones').once('value');
+                    let cartonesActuales = normalizarCartones(snap.val() || datos, totalCartonesActual);
+                    if (cartonesActuales[c].lineas[l].estado !== "libre") {
+                        pendingUpdate = false;
+                        return;
+                    }
+                    cartonesActuales[c].lineas[l] = { nombre: nombreInput, estado: "reservado" };
+                    await anotarseRef.update({ cartones: cartonesActuales });
+                    sincronizarResumenAnotadosEnFirebase(cartonesActuales);
+                } catch (e) {
+                    console.error(e);
+                }
+                pendingUpdate = false;
+            } else if (botonInvisibleActivo) {
+                await seleccionarNumeroInteligente(c);
+            } else {
+                const idx = seleccionados.findIndex(s => s.c === c && s.l === l);
+                if (idx > -1) seleccionados.splice(idx, 1);
+                else seleccionados.push({ c, l });
+                dibujar();
+            }
+            return;
+        }
+
+        if (config.bloqueado && !config.admin) return;
+        const n = document.getElementById("nombreUser").value.trim().toUpperCase();
+        if (!n) {
+            document.getElementById("nombreUser").focus();
+            return;
+        }
+
+        if (lineaActual.estado === "libre") {
+            pendingUpdate = true;
+            guardarHistorial();
+            try {
+                const snap = await anotarseRef.child('cartones').once('value');
+                let cartonesActuales = normalizarCartones(snap.val() || datos, totalCartonesActual);
+                if (cartonesActuales[c].lineas[l].estado !== "libre") {
+                    alert("⚠️ Esta línea ya fue ocupada por otra persona.");
+                    pendingUpdate = false;
+                    return;
+                }
+                cartonesActuales[c].lineas[l] = { nombre: n, estado: "reservado" };
+                await anotarseRef.update({ cartones: cartonesActuales });
+                sincronizarResumenAnotadosEnFirebase(cartonesActuales);
+            } catch (e) {
+                console.error(e);
+            }
+            pendingUpdate = false;
+        }
+    }
+
+    window.toggleVerificacionGlobal = () => {
+        modoVerificacion = !modoVerificacion;
+        if (!modoVerificacion) {
+            seleccionados = [];
+            document.getElementById("msgLineas").innerText = "";
+        }
+        dibujar();
+    };
+
+    window.toggleModoBlanco = () => {
+        const activo = document.body.classList.toggle('modo-blanco');
+        const b = document.getElementById('btnBlanco');
+        if (activo) {
+            b.textContent = 'ORIGINAL';
+            b.style.background = '#facc15';
+            b.style.color = '#0f172a';
+            b.style.border = '1px solid #ca8a04';
+        } else {
+            b.textContent = 'BLANCO';
+            b.style.background = '#ffffff';
+            b.style.color = '#0f172a';
+            b.style.border = '1px solid #94a3b8';
+        }
+    };
+
+    window.activarCaptura = () => {
+        document.body.classList.add('modo-captura');
+        document.getElementById('volverArea').style.display = 'flex';
+        actualizarStats();
+    };
+
+    window.desactivarCaptura = () => {
+        document.body.classList.remove('modo-captura');
+        document.getElementById('volverArea').style.display = 'none';
+    };
+
+    // ============================================================
+    // CONTRASEÑA DE ADMIN = "09" EN FIREBASE
+    // ============================================================
+    window.toggleAdmin = async () => {
+        if (!config.admin) {
+            const pass = prompt("🔐 Clave de Administrador:");
+            if (pass === null) return;
+
+            const snap = await anotarseRef.child('pass').once('value');
+            const passFirebase = snap.exists() ? String(snap.val()) : "09";
+
+            if (pass.trim() === passFirebase || pass.trim() === "09") {
+                config.admin = true;
+                document.getElementById("adminPanel").style.display = "flex";
+                document.getElementById("adminExtraPanel").style.display = "block";
+                actualizarCampoNombre();
+                actualizarStats();
+            } else {
+                alert("❌ Clave incorrecta");
+            }
+        } else {
+            config.admin = false;
+            document.getElementById("adminPanel").style.display = "none";
+            document.getElementById("adminExtraPanel").style.display = "none";
+            modoVerificacion = false;
+            seleccionados = [];
+            document.getElementById("msgLineas").innerText = "";
+            actualizarCampoNombre();
+            actualizarStats();
+            dibujar();
+        }
+    };
+
+    function guardarHistorial() {
+        historial.push(JSON.parse(JSON.stringify(datos)));
+        if (historial.length > 10) historial.shift();
+    }
+
+    window.mostrarModalModificar = () => {
+        if (seleccionados.length === 0) {
+            alert("Selecciona una o más líneas primero");
+            return;
+        }
+        const textoActual = datos[seleccionados[0].c].lineas[seleccionados[0].l].nombre || "";
+        document.getElementById("modalNombreInput").value = textoActual;
+        document.getElementById("buscarSugerenciaModal").value = "";
+        actualizarListaSugerenciasModal("");
+        document.getElementById("modalModificar").style.display = "flex";
+    };
+
+    window.filtrarSugerenciasModal = () => {
+        const filtro = document.getElementById("buscarSugerenciaModal").value.trim().toUpperCase();
+        actualizarListaSugerenciasModal(filtro);
+    };
+
+    function actualizarListaSugerenciasModal(filtro) {
+        const sugerencias = obtenerSugerenciasDesdeCaja();
+        const container = document.getElementById("sugerenciasModalList");
+        container.innerHTML = "";
+        let filtradas = filtro ? sugerencias.filter(n => n.includes(filtro)) : sugerencias;
+        filtradas.forEach(nom => {
+            const div = document.createElement("div");
+            div.className = "sugerencia-item";
+            div.innerText = nom;
+            div.onclick = () => {
+                document.getElementById("modalNombreInput").value = nom;
+                document.getElementById("buscarSugerenciaModal").value = "";
+                actualizarListaSugerenciasModal("");
+            };
+            container.appendChild(div);
+        });
+        if (filtradas.length === 0) {
+            container.innerHTML = "<div style='padding:8px; color:#94a3b8;'>Sin coincidencias</div>";
+        }
+    }
+
+    window.aplicarModificacionMultiple = async () => {
+        let nuevoTexto = document.getElementById("modalNombreInput").value.trim().toUpperCase();
+        guardarHistorial();
+        for (let sel of seleccionados) {
+            datos[sel.c].lineas[sel.l].nombre = nuevoTexto;
+            datos[sel.c].lineas[sel.l].estado = nuevoTexto ? "reservado" : "libre";
+        }
+        await anotarseRef.update({ cartones: datos });
+        sincronizarResumenAnotadosEnFirebase(datos);
+        seleccionados = [];
+        cerrarModal();
+        dibujar();
+        actualizarStats();
+    };
+
+    window.cerrarModal = () => {
+        document.getElementById("modalModificar").style.display = "none";
+    };
+
+    // ============================================================
+    // COBRO DE CASILLAS A $3.000 (3 EN UNIDADES DE CAJA)
+    // ============================================================
+    window.marcarAccion = async (nuevoEstado) => {
+        if (seleccionados.length === 0) return;
+        guardarHistorial();
+        let nuevaCaja = document.getElementById("notas-caja").value.toUpperCase();
+        let cartonesAActualizar = JSON.parse(JSON.stringify(datos));
+        let cambiosRealizados = false;
+
+        if (nuevoEstado === 'pagado') {
+            let lineasPorNombre = {};
+            for (let sel of seleccionados) {
+                const info = datos[sel.c].lineas[sel.l];
+                if (info.nombre && info.estado !== 'pagado') {
+                    let nombre = info.nombre.trim();
+                    if (!lineasPorNombre[nombre]) lineasPorNombre[nombre] = [];
+                    lineasPorNombre[nombre].push(sel);
+                }
+            }
+
+            const formatPesos = (valorEnMiles) => Math.round(valorEnMiles * 1000).toLocaleString('es-CO');
+            const precioUnitarioTexto = '$' + valorCasillaPesos.toLocaleString('es-CO');
+
+            for (let nombre in lineasPorNombre) {
+                let indices = lineasPorNombre[nombre];
+                let cantidad = indices.length;
+                let costo = Number((cantidad * COSTO_POR_CASILLA_MILES).toFixed(2));
+
+                let lineasCaja = nuevaCaja.split('\n').map(l => l.trim()).filter(l => l !== "");
+                let saldoActual = 0, indexLinea = -1;
+                lineasCaja.forEach((l, i) => {
+                    if (l.startsWith(nombre + ":")) {
+                        let partes = l.split(':');
+                        saldoActual = parseFloat(partes[1].trim()) || 0;
+                        indexLinea = i;
+                    }
+                });
+
+                if (indexLinea !== -1 && saldoActual >= costo) {
+                    let nuevoSaldo = Number((saldoActual - costo).toFixed(2));
+                    if (nuevoSaldo > 0) lineasCaja[indexLinea] = `${nombre}: ${nuevoSaldo}`;
+                    else lineasCaja.splice(indexLinea, 1);
+                    nuevaCaja = lineasCaja.join('\n');
+                    indices.forEach(sel => {
+                        cartonesAActualizar[sel.c].lineas[sel.l].estado = 'pagado';
+                    });
+                    cambiosRealizados = true;
+                } else if (indexLinea !== -1 && saldoActual > 0 && saldoActual < costo) {
+                    let saldoRestante = Number((saldoActual - costo).toFixed(2));
+                    let msg = `⚠️ ${nombre} tiene $${formatPesos(saldoActual)} en caja\n`;
+                    msg += `Juega ${cantidad} casilla(s) a ${precioUnitarioTexto} c/u → costo: $${formatPesos(costo)}\n`;
+                    msg += `Saldo insuficiente (faltan $${formatPesos(Math.abs(saldoRestante))})\n\n¿Marcar PAGADO igualmente?`;
+                    if (confirm(msg)) {
+                        lineasCaja.splice(indexLinea, 1);
+                        nuevaCaja = lineasCaja.join('\n');
+                        indices.forEach(sel => {
+                            cartonesAActualizar[sel.c].lineas[sel.l].estado = 'pagado';
+                        });
+                        cambiosRealizados = true;
+                    }
+                } else {
+                    let msg = `⚠️ ${nombre} NO tiene saldo en caja\n`;
+                    msg += `Juega ${cantidad} casilla(s) a ${precioUnitarioTexto} c/u → costo: $${formatPesos(costo)}\n\n¿Marcar PAGADO igualmente?`;
+                    if (confirm(msg)) {
+                        indices.forEach(sel => {
+                            cartonesAActualizar[sel.c].lineas[sel.l].estado = 'pagado';
+                        });
+                        cambiosRealizados = true;
+                    }
+                }
+            }
+        } else if (nuevoEstado === 'libre') {
+            if (!confirm("⚠️ ¿Liberar y borrar nombres de las casillas seleccionadas?")) return;
+            for (let sel of seleccionados) {
+                cartonesAActualizar[sel.c].lineas[sel.l].estado = "libre";
+                cartonesAActualizar[sel.c].lineas[sel.l].nombre = "";
+            }
+            cambiosRealizados = true;
+        }
+
+        if (cambiosRealizados) {
+            datos = cartonesAActualizar;
+            seleccionados = [];
+            document.getElementById("msgLineas").innerText = "";
+            document.getElementById("notas-caja").value = nuevaCaja;
+            await anotarseRef.update({ cartones: datos, notas_caja: nuevaCaja });
+            sincronizarResumenAnotadosEnFirebase(datos);
+            dibujar();
+            actualizarStats();
+        }
+    };
+
+    // ============================================================
+    // CONTROL DE GANADORES DINÁMICO SEGÚN PREMIOS DEL ADMIN
+    // ============================================================
+    function leerGanadoresIngresadosEnOrden() {
+        const premios = obtenerListaPremiosActivos();
+        const inputs = Array.from(document.querySelectorAll('input.input-ganador-orden'));
+        const resultado = [];
+
+        for (let i = 0; i < inputs.length; i++) {
+            const val = inputs[i].value.trim();
+            if (!val) continue;
+            const numCarton = parseInt(val, 10);
+            if (isNaN(numCarton) || numCarton < 1 || numCarton > datos.length) continue;
+
+            const premioTexto = premios[i] || `PREMIO ${i + 1}`;
+            const valorEnMiles = extraerValorEnMilesDesdePremio(premioTexto);
+            const nombres = obtenerTodosLosNombresConRepeticiones(numCarton);
+
+            resultado.push({
+                orden: i + 1,
+                numCarton: numCarton,
+                premioTexto: premioTexto,
+                valorEnMiles: valorEnMiles,
+                nombres: nombres
+            });
+        }
+        return resultado;
+    }
+
+    window.generarMensajeGanadorMulti = async () => {
+        const ganadores = leerGanadoresIngresadosEnOrden();
+        if (ganadores.length === 0) {
+            alert("⚠️ Ingresa al menos un número de cartón ganador.");
+            return;
+        }
+
+        for (const g of ganadores) {
+            if (g.nombres.length === 0) {
+                alert(`⚠️ El cartón #${g.numCarton} (Ganador ${g.orden}) no tiene nombres anotados.`);
+                return;
+            }
+        }
+
+        const agrupar = (lista) => {
+            const c = {};
+            lista.forEach(n => { c[n] = (c[n] || 0) + 1; });
+            return c;
+        };
+
+        let mensaje = `🎰 *RESULTADOS RONDA ${numeroRonda}* 🎰\n\n`;
+
+        ganadores.forEach(g => {
+            const conteo = agrupar(g.nombres);
+            mensaje += `🏆 *GANADOR ${g.orden} - CARTÓN #${g.numCarton}* (${g.premioTexto})\n`;
+            for (let [nombre, cant] of Object.entries(conteo)) {
+                if (g.valorEnMiles > 0) {
+                    const montoTotal = Math.round(g.valorEnMiles * 1000 * cant).toLocaleString('es-CO');
+                    mensaje += `👤 *${nombre}*${cant > 1 ? ` (${cant} líneas)` : ''} gana *$${montoTotal}💰*\n`;
+                } else {
+                    mensaje += `👤 *${nombre}*${cant > 1 ? ` (${cant} líneas)` : ''} gana *${g.premioTexto}🎁*\n`;
+                }
+            }
+            mensaje += `\n`;
+        });
+
+        mensaje += "✅ ¡Felicidades a los ganadores! 🎉";
+
+        navigator.clipboard.writeText(mensaje.trim());
+        alert("📋 Mensaje de ganadores copiado al portapapeles");
+
+        await guardarGanadoresEnHistorialMulti(ganadores);
+    };
+
+    window.cargarPremiosACajaMulti = async () => {
+        const ganadores = leerGanadoresIngresadosEnOrden();
+        if (ganadores.length === 0) {
+            alert("⚠️ Ingresa los números de los cartones ganadores en orden.");
+            return;
+        }
+
+        for (const g of ganadores) {
+            if (g.nombres.length === 0) {
+                alert(`⚠️ El cartón #${g.numCarton} (Ganador ${g.orden}) no tiene nombres asignados.`);
+                return;
+            }
+        }
+
+        const tramoActual = getTramoActual();
+        const clave = getClaveTramo(tramoActual);
+        if (!puntosPorTramo[clave]) puntosPorTramo[clave] = {};
+
+        let nuevaCaja = document.getElementById("notas-caja").value.toUpperCase();
+        let lineas = nuevaCaja.split('\n').map(l => l.trim()).filter(l => l !== "");
+        let resumenPremios = [];
+        let premiosAgregados = false;
+
+        function agregarSaldo(nombre, cantidadEnMiles, concepto) {
+            if (!nombre) return;
+            if (cantidadEnMiles > 0) {
+                let encontrado = false;
+                lineas = lineas.map(l => {
+                    if (l.startsWith(nombre + ":")) {
+                        encontrado = true;
+                        let partes = l.split(':');
+                        let valorActual = parseFloat(partes[1].trim()) || 0;
+                        let nuevoValor = Number((valorActual + cantidadEnMiles).toFixed(2));
+                        return `${nombre}: ${nuevoValor}`;
+                    }
+                    return l;
+                });
+                if (!encontrado) {
+                    lineas.push(`${nombre}: ${cantidadEnMiles}`);
+                }
+                const valorFormateado = Math.round(cantidadEnMiles * 1000).toLocaleString('es-CO');
+                resumenPremios.push(`• ${nombre}: +$${valorFormateado} (${concepto})`);
+            } else {
+                resumenPremios.push(`• ${nombre}: Premio ${concepto}`);
+            }
+            premiosAgregados = true;
+        }
+
+        function agregarPuntos(nombre, puntos) {
+            if (!nombre || puntos === 0) return;
+            puntosPorTramo[clave][nombre] = (puntosPorTramo[clave][nombre] || 0) + puntos;
+        }
+
+        const agruparPorNombre = (lista) => {
+            const conteo = {};
+            lista.forEach(n => {
+                const limpio = n.trim();
+                if (limpio) conteo[limpio] = (conteo[limpio] || 0) + 1;
+            });
+            return conteo;
+        };
+
+        ganadores.forEach((g, idx) => {
+            const conteo = agruparPorNombre(g.nombres);
+            const puntosPorUnidad = idx === 0 ? 3 : 2;
+            for (let [nombre, cantidad] of Object.entries(conteo)) {
+                agregarSaldo(nombre, g.valorEnMiles * cantidad, `Ganador ${g.orden} [${g.premioTexto}] x${cantidad}`);
+                agregarPuntos(nombre, puntosPorUnidad * cantidad);
+            }
+        });
+
+        if (premiosAgregados) {
+            let cajaFinal = lineas.join('\n');
+            document.getElementById("notas-caja").value = cajaFinal;
+
+            await anotarseRef.update({
+                notas_caja: cajaFinal,
+                puntosPorTramo: puntosPorTramo
+            });
+
+            await guardarGanadoresEnHistorialMulti(ganadores);
+
+            let alertMsg = "✅ PREMIOS REGISTRADOS EN CAJA EXITOSAMENTE:\n\n";
+            alertMsg += resumenPremios.join("\n");
+            alert(alertMsg);
+
+            document.querySelectorAll('input.input-ganador-orden').forEach(inp => { inp.value = ""; });
+            actualizarStats();
+        }
+    };
+
+    window.copiarListaRondaGratis = () => {
+        const primerPremio = obtenerListaPremiosActivos()[0] || "$5.000";
+        let txt = "*🎰 LISTADO BINGO LINEAL*\n";
+        txt += "*Ronda GRATIS*\n";
+        txt += "───────\n";
+        txt += `🏆 *PREMIO:* ${primerPremio}💰\n`;
+        txt += "───────\n";
+
+        datos.forEach((c, idx) => {
+            const primera = (c.lineas || [])[0];
+            let displayName = (primera && primera.nombre) ? primera.nombre : "";
+            if (displayName) {
+                txt += `${idx + 1} 🍀 ${displayName}\n`;
+            }
+        });
+
+        txt += "\nGracias por seguir apoyándome se les quiere 😘";
+        navigator.clipboard.writeText(txt);
+        alert("✅ Mensaje de Ronda Gratis copiado");
+    };
+
+    window.deshacerAccion = async () => {
+        if (historial.length) {
+            datos = historial.pop();
+            await anotarseRef.update({ cartones: datos });
+            sincronizarResumenAnotadosEnFirebase(datos);
+            seleccionados = [];
+            dibujar();
+            actualizarStats();
+        }
+    };
+
+    // ============================================================
+    // LIMPIAR TABLERO PARA NUEVA RONDA
+    // ============================================================
+    window.reiniciarBingo = async () => {
+        if (cronometroActivo) return;
+
+        const nuevaRondaPreview = numeroRonda + 1;
+        let mensaje = `♻️ ¿LIMPIAR TABLERO E INICIAR RONDA ${nuevaRondaPreview}?\n\n`;
+        mensaje += "• Se limpiarán los nombres de esta ronda\n";
+        mensaje += "• +1 RONDA a cada jugador activo\n";
+        mensaje += "• +1 PUNTO por cada casilla ocupada";
+
+        if (!confirm(mensaje)) return;
+
+        try {
+            guardarHistorial();
+
+            const tramoActual = getTramoActual();
+            const clave = getClaveTramo(tramoActual);
+            if (!puntosPorTramo[clave]) puntosPorTramo[clave] = {};
+
+            let lineasPorJugador = {};
+            datos.forEach(c => {
+                (c.lineas || []).forEach(linea => {
+                    if (linea.nombre && linea.nombre !== "") {
+                        const nombre = linea.nombre.trim();
+                        lineasPorJugador[nombre] = (lineasPorJugador[nombre] || 0) + 1;
+                    }
+                });
+            });
+
+            Object.entries(lineasPorJugador).forEach(([nombre, cantidad]) => {
+                puntosPorTramo[clave][nombre] = (puntosPorTramo[clave][nombre] || 0) + cantidad;
+            });
+
+            Object.keys(lineasPorJugador).forEach(nombre => {
+                rondasPorJugador[nombre] = (rondasPorJugador[nombre] || 0) + 1;
+            });
+
+            const backup = JSON.parse(JSON.stringify(datos));
+            backup.forEach(c => {
+                (c.lineas || []).forEach(l => {
+                    l.nombre = "";
+                    l.estado = "libre";
+                });
+            });
+            datos = backup;
+
+            const nuevaRonda = numeroRonda + 1;
+            await anotarseRef.update({
+                cartones: datos,
+                numero_ronda: nuevaRonda,
+                puntosPorTramo: puntosPorTramo,
+                rondasPorJugador: rondasPorJugador
+            });
+            sincronizarResumenAnotadosEnFirebase(datos);
+
+            numeroRonda = nuevaRonda;
+            seleccionados = [];
+
+            dibujar();
+            actualizarStats();
+            iniciarCronometroOptimizado();
+        } catch (error) {
+            alert("❌ Error al reiniciar: " + error.message);
+        }
+    };
+
+    window.toggleBloqueo = async () => {
+        const nuevoEstado = !config.bloqueado;
+        config.bloqueado = nuevoEstado;
+        const btnB = document.getElementById("btnBloqueo");
+        btnB.innerText = config.bloqueado ? "🔒 CERRADO" : "🔓 ABIERTO";
+        btnB.style.background = config.bloqueado ? "#ef4444" : "#10b981";
+        actualizarCampoNombre();
+        await anotarseRef.update({ bloqueado: config.bloqueado });
+    };
+
+    window.gestionarFilas = async (cambio) => {
+        guardarHistorial();
+        datos.forEach(c => {
+            if (cambio === 1) c.lineas.push({ nombre: "", estado: "libre" });
+            else if (cambio === -1 && c.lineas.length > 1) c.lineas.pop();
+        });
+        await anotarseRef.update({ cartones: datos });
+    };
+
+    window.cambiarCols = (v) => {
+        document.documentElement.style.setProperty('--columnas', v);
+        document.getElementById("valCol").innerText = v;
+        dibujar();
+    };
+
+    window.guardarCaja = async () => {
+        const valorCaja = document.getElementById("notas-caja").value.toUpperCase();
+        await anotarseRef.update({ notas_caja: valorCaja });
+        alert("Caja guardada ✅");
+    };
+
+    // ============================================================
+    // ASIGNAR AL AZAR (RULETA GRATIS POR TRAMO)
+    // ============================================================
+    function obtenerRankingPorTramo(tramo) {
+        const clave = `tramo_${tramo}`;
+        const datosTramo = puntosPorTramo[clave] || {};
+        const sorted = Object.entries(datosTramo).sort((a, b) => b[1] - a[1]);
+        return sorted.map(([nombre, puntos], index) => {
+            let cantidad = 1;
+            if (index === 0) cantidad = 3;
+            else if (index === 1) cantidad = 2;
+            return { nombre, puntos, cantidad };
+        });
+    }
+
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function mostrarResultadoRuleta(resultados, tramo) {
+        const container = document.getElementById('resultadoRuletaModal');
+        const tramoTexto = getNombreTramo(tramo);
+
+        if (resultados.length === 0) {
+            container.innerHTML = `<p style="color: #f87171; text-align: center;">⚠️ No hay puntos registrados en el tramo ${tramoTexto}</p>`;
+            return;
+        }
+
+        let html = `<div style="color: var(--oro); font-weight: 800; margin-bottom: 8px;">🎯 Tramo ${tramoTexto}</div>`;
+        for (const r of resultados) {
+            const numsStr = r.numeros.length > 0 ? r.numeros.join(', ') : '⚠️ Sin número';
+            const bgColor = r.cantidad >= 3 ? '#fbbf24' : (r.cantidad >= 2 ? '#f97316' : '#1e293b');
+            const textColor = r.cantidad >= 2 ? '#0f172a' : '#f8fafc';
+            html += `
+                <div class="resultado-ruleta-item" style="background: ${bgColor}; color: ${textColor};">
+                    <span><strong>${limpiarNombre(r.nombre)}</strong> (${r.puntos} pts) → ${r.cantidad} número${r.cantidad > 1 ? 's' : ''}</span>
+                    <span class="nums">${numsStr}</span>
+                </div>
+            `;
+        }
+        container.innerHTML = html;
+    }
+
+    window.mostrarModalRuleta = () => {
+        document.getElementById("modalRuleta").style.display = "flex";
+        const tramo = parseInt(document.getElementById('selectTramoRuletaModal').value, 10);
+        const resultados = asignarNumerosRuleta(tramo);
+        mostrarResultadoRuleta(resultados, tramo);
+    };
+
+    window.cerrarModalRuleta = () => {
+        document.getElementById("modalRuleta").style.display = "none";
+    };
+
+    function asignarNumerosRuleta(tramo) {
+        const numerosDisponibles = Array.from({ length: totalCartonesActual }, (_, i) => i + 1);
+        let numeros = shuffleArray([...numerosDisponibles]);
+        const ranking = obtenerRankingPorTramo(tramo);
+        const participantes = ranking.slice(0, 12);
+        const resultado = [];
+        let idx = 0;
+
+        for (const jug of participantes) {
+            const asignados = [];
+            for (let i = 0; i < jug.cantidad; i++) {
+                if (idx < numeros.length) {
+                    asignados.push(numeros[idx]);
+                    idx++;
+                }
+            }
+            resultado.push({
+                nombre: limpiarNombre(jug.nombre),
+                puntos: jug.puntos,
+                cantidad: jug.cantidad,
+                numeros: asignados
+            });
+        }
+        return resultado;
+    }
+
+    async function asignarRuletaYGuardarModal(tramo) {
+        let nombresAnotados = new Set();
+        let cartonesOcupados = new Set();
+
+        datos.forEach((c, idx) => {
+            (c.lineas || []).forEach(linea => {
+                if (linea.nombre && linea.nombre !== "") {
+                    nombresAnotados.add(limpiarNombre(linea.nombre));
+                    cartonesOcupados.add(idx + 1);
+                }
+            });
+        });
+
+        const ranking = obtenerRankingPorTramo(tramo);
+        const participantesPendientes = ranking.filter(jug => !nombresAnotados.has(limpiarNombre(jug.nombre)));
+
+        let cartonesLibres = [];
+        for (let i = 1; i <= totalCartonesActual; i++) {
+            if (!cartonesOcupados.has(i)) cartonesLibres.push(i);
+        }
+        cartonesLibres = shuffleArray(cartonesLibres);
+
+        let idx = 0;
+        let asignaciones = [];
+
+        for (const jug of participantesPendientes) {
+            const nombreLimpio = limpiarNombre(jug.nombre);
+            const asignados = [];
+            for (let i = 0; i < jug.cantidad; i++) {
+                if (idx < cartonesLibres.length) {
+                    const numCarton = cartonesLibres[idx];
+                    asignados.push(numCarton);
+                    const cartonIdx = numCarton - 1;
+                    if (cartonIdx >= 0 && cartonIdx < datos.length) {
+                        let lineaAsignada = false;
+                        for (let l = 0; l < datos[cartonIdx].lineas.length; l++) {
+                            if (datos[cartonIdx].lineas[l].estado === "libre") {
+                                datos[cartonIdx].lineas[l].nombre = nombreLimpio;
+                                datos[cartonIdx].lineas[l].estado = "reservado";
+                                lineaAsignada = true;
+                                break;
+                            }
+                        }
+                        if (!lineaAsignada) {
+                            datos[cartonIdx].lineas.push({ nombre: nombreLimpio, estado: "reservado" });
+                        }
+                    }
+                    idx++;
+                }
+            }
+            if (asignados.length > 0) {
+                asignaciones.push({
+                    nombre: nombreLimpio,
+                    puntos: jug.puntos,
+                    cantidad: jug.cantidad,
+                    numeros: asignados
+                });
+            }
+        }
+
+        await anotarseRef.update({ cartones: datos });
+        sincronizarResumenAnotadosEnFirebase(datos);
+        mostrarResultadoRuleta(asignaciones, tramo);
+        dibujar();
+        actualizarStats();
+        alert(`✅ Asignación completada para el tramo ${getNombreTramo(tramo)}`);
+    }
+
+    document.getElementById('btnAsignarRuletaModal').addEventListener('click', async function() {
+        const tramo = parseInt(document.getElementById('selectTramoRuletaModal').value, 10);
+        if (confirm(`¿ASIGNAR NÚMEROS PARA EL TRAMO ${getNombreTramo(tramo)}?`)) {
+            await asignarRuletaYGuardarModal(tramo);
+        }
+    });
+
+    // =========================================================================
+    // LISTENERS EN TIEMPO REAL CON FIREBASE (ADMIN, BINGO, PREMIOS Y ANOTARSE)
+    // =========================================================================
+    function iniciarEscuchaFirebaseUnificada() {
+        // 1. Asegurar que la contraseña sea "09" en Firebase y que exista estructura inicial
+        anotarseRef.once('value', snap => {
+            const val = snap.val();
+            if (!val) {
+                const inicial = {
+                    pass: "09",
+                    bloqueado: false,
+                    valor_casilla: 3000,
+                    numero_ronda: 1,
+                    segundosCronometro: 12,
+                    notas_caja: "",
+                    cartones: crearCartonesPorDefecto(15, 2)
+                };
+                anotarseRef.set(inicial);
+            } else if (val.pass !== "09") {
+                anotarseRef.update({ pass: "09" });
+            }
+        });
+
+        // 2. Escuchar los premios configurados en Admin.html ('bingo/configuracion/premios')
+        db.ref('bingo/configuracion/premios').on('value', snapshot => {
+            const raw = snapshot.val();
+            if (Array.isArray(raw)) {
+                premiosAdmin = raw.map(p => String(p || '').trim()).filter(Boolean);
+            } else if (raw && typeof raw === 'object') {
+                if (raw.premio !== undefined) {
+                    premiosAdmin = [String(raw.premio).trim()].filter(Boolean);
+                } else {
+                    premiosAdmin = Object.values(raw).map(p => String(p || '').trim()).filter(Boolean);
+                }
+            } else {
+                premiosAdmin = [];
+            }
+            renderizarPremiosYCuadrosGanadores();
+        });
+
+        // 3. Escuchar el tablero activo publicado por Admin.html ('bingo/tablero_activo')
+        db.ref('bingo/tablero_activo').on('value', snapshot => {
+            const activo = snapshot.val();
+            const labelEl = document.getElementById('activeGameLabel');
+            if (activo && activo.data) {
+                const listaFam = Array.isArray(activo.data) ? activo.data : Object.values(activo.data);
+                totalCartonesActual = listaFam.length || activo.totalFamilias || 15;
+                nombresFamiliasTablero = listaFam.map(f => (f && f.nombre) ? String(f.nombre).trim() : '');
+                if (labelEl) {
+                    labelEl.textContent = `🟢`;
+                }
+                if (datos.length > 0 && datos.length !== totalCartonesActual) {
+                    datos = normalizarCartones(datos, totalCartonesActual);
+                    anotarseRef.update({ cartones: datos });
+                }
+                renderizarPremiosYCuadrosGanadores();
+                dibujar();
+                actualizarStats();
+            } else {
+                if (labelEl) {
+                    labelEl.textContent = `🟢`;
+                }
+            }
+        });
+
+        // 4. Escuchar estado en tiempo real de la página de Anotarse ('bingo/anotarse')
+        anotarseRef.on('value', snap => {
+            if (!snap.exists()) return;
+            const d = snap.val();
+
+            datos = normalizarCartones(d.cartones || [], totalCartonesActual);
+            config.bloqueado = Boolean(d.bloqueado);
+
+            const btnB = document.getElementById("btnBloqueo");
+            if (btnB) {
+                btnB.innerText = config.bloqueado ? "🔒 CERRADO" : "🔓 ABIERTO";
+                btnB.style.background = config.bloqueado ? "#ef4444" : "#10b981";
+            }
+
+            const cajaEl = document.getElementById('notas-caja');
+            if (d.notas_caja !== undefined && cajaEl && document.activeElement !== cajaEl) {
+                cajaEl.value = String(d.notas_caja).toUpperCase();
+            }
+
+            numeroRonda = d.numero_ronda || 1;
+            rondasPorJugador = d.rondasPorJugador || {};
+            puntosPorTramo = d.puntosPorTramo || {};
+            historialGanadores = Array.isArray(d.historialGanadores)
+                ? d.historialGanadores
+                : (d.historialGanadores ? Object.values(d.historialGanadores) : []);
+            numerosSalidos = d.numerosSalidos || { bingos: [], ruletas: [] };
+
+            if (d.valor_casilla !== undefined) {
+                actualizarUIValorCasilla(d.valor_casilla);
+            } else {
+                actualizarUIValorCasilla(3000);
+            }
+
+            if (d.segundosCronometro !== undefined) {
+                segundosCronometro = d.segundosCronometro;
+                const inpSeg = document.getElementById("cronometroSegundos");
+                if (inpSeg && document.activeElement !== inpSeg) {
+                    inpSeg.value = segundosCronometro;
+                }
+            }
+
+            restaurarCronometro(d);
+            actualizarCampoNombre();
+            dibujar();
+            actualizarStats();
+        });
+    }
+
+    // ===== GANADORES ENVIADOS DESDE BINGO =====
+let ganadoresDesdeBingo = null;
+
+function aplicarGanadoresDesdeBingo() {
+    if (!ganadoresDesdeBingo) return;
+    document.querySelectorAll('input.input-ganador-orden').forEach((inp, i) => {
+        const v = ganadoresDesdeBingo['numGanador' + (i + 1)];
+        if (v !== undefined && v !== null) inp.value = v;
+    });
+}
+
+// Cada vez que se redibujan los cuadros de ganadores, vuelve a llenarlos
+const _renderPremiosOriginal = renderizarPremiosYCuadrosGanadores;
+renderizarPremiosYCuadrosGanadores = function () {
+    _renderPremiosOriginal();
+    aplicarGanadoresDesdeBingo();
+};
+
+db.ref('bingo/ganadores_actuales').on('value', snap => {
+    ganadoresDesdeBingo = snap.val();
+    aplicarGanadoresDesdeBingo();
+});
+
+// ===== MODO BLANCO SINCRONIZADO CON BINGO =====
+let modoBlancoRemoto = false;
+
+window.aplicarModoBlanco = (activo) => {
+    document.body.classList.toggle('modo-blanco', activo);
+    const b = document.getElementById('btnBlanco');
+    if (!b) return;
+    if (activo) {
+        b.textContent = 'ORIGINAL';
+        b.style.background = '#facc15';
+        b.style.color = '#0f172a';
+        b.style.border = '1px solid #ca8a04';
+    } else {
+        b.textContent = 'BLANCO';
+        b.style.background = '#ffffff';
+        b.style.color = '#0f172a';
+        b.style.border = '1px solid #94a3b8';
+    }
+};
+
+window.toggleModoBlanco = () => {
+    const activo = !document.body.classList.contains('modo-blanco');
+    aplicarModoBlanco(activo);
+    anotarseRef.child('modo_blanco').set(activo);
+};
+
+anotarseRef.child('modo_blanco').on('value', snap => {
+    modoBlancoRemoto = snap.val() === true;
+    if (config.admin) aplicarModoBlanco(modoBlancoRemoto);
+});
+
+// Al entrar o salir de admin, deja el botón sincronizado
+const _toggleAdminOriginal = window.toggleAdmin;
+window.toggleAdmin = async () => {
+    await _toggleAdminOriginal();
+    aplicarModoBlanco(config.admin && modoBlancoRemoto);
+};
+
+    renderizarPremiosYCuadrosGanadores();
+    iniciarEscuchaFirebaseUnificada();
+</script>
+</body>
+</html>
