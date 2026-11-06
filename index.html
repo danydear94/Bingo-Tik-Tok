@@ -2269,8 +2269,7 @@
         lineasEnProceso.add(clave);
         try {
             if (config.admin) guardarHistorial();
-            const ok = await anotarLineaTransaccion(c, l, nombre);
-            if (!ok && avisar) alert("⚠️ Esa línea ya fue ocupada por otra persona. Elige otra.");
+            await anotarLineaTransaccion(c, l, nombre);
         } catch (e) {
             console.error(e);
             alert("❌ No se pudo anotar. Revisa tu conexión e intenta de nuevo.");
@@ -2316,7 +2315,7 @@
     };
 
     // ============================================================
-    // CONTRASEÑA DE ADMIN = "09" EN FIREBASE
+    // CONTRASEÑA DE ADMIN (se lee de Firebase: bingo/anotarse/pass)
     // ============================================================
     window.toggleAdmin = async () => {
         if (!config.admin) {
@@ -2324,9 +2323,9 @@
             if (pass === null) return;
 
             const snap = await anotarseRef.child('pass').once('value');
-            const passFirebase = snap.exists() ? String(snap.val()) : "09";
+            const passFirebase = snap.exists() ? String(snap.val()) : null;
 
-            if (pass.trim() === passFirebase || pass.trim() === "09") {
+            if (passFirebase !== null && pass.trim() === passFirebase) {
                 config.admin = true;
                 document.getElementById("adminPanel").style.display = "flex";
                 document.getElementById("adminExtraPanel").style.display = "block";
@@ -2963,12 +2962,11 @@
     // LISTENERS EN TIEMPO REAL CON FIREBASE (ADMIN, BINGO, PREMIOS Y ANOTARSE)
     // =========================================================================
     function iniciarEscuchaFirebaseUnificada() {
-        // 1. Asegurar que la contraseña sea "09" en Firebase y que exista estructura inicial
+        // 1. Crear estructura inicial si no existe
         anotarseRef.once('value', snap => {
             const val = snap.val();
             if (!val) {
                 const inicial = {
-                    pass: "09",
                     bloqueado: false,
                     valor_casilla: 3000,
                     numero_ronda: 1,
@@ -2977,8 +2975,6 @@
                     cartones: crearCartonesPorDefecto(15, 2)
                 };
                 anotarseRef.set(inicial);
-            } else if (val.pass !== "09") {
-                anotarseRef.update({ pass: "09" });
             }
         });
 
