@@ -195,10 +195,22 @@
             font-size: 12px;
         }
 
-        /* BOTÓN IMAGEN "ENTRAR AL LIVE" (solo vista normal) */
-        #liveBtnWrap { display: none; text-align: center; margin: 0 auto 18px auto; padding: 0 14px; }
-        #liveBtnWrap a { display: inline-block; max-width: 100%; }
-        #liveBtnWrap img { max-width: 100%; max-height: 120px; border-radius: 12px; display: block; margin: 0 auto; box-shadow: 0 4px 16px rgba(0,0,0,0.5); }
+        /* ===== MIRAR EN VIVO: 3 BOTONES CUADRADOS (solo vista normal) ===== */
+        #liveBtnWrap { display: none; max-width: 900px; margin: 18px auto 6px auto; padding: 0 14px; text-align: center; }
+        .live-titulo {
+            color: #facc15; font-weight: 900; font-size: 20px; letter-spacing: 1px;
+            margin-bottom: 10px; text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+        }
+        .live-titulo .flecha { display: inline-block; animation: liveBounce 1s infinite ease-in-out; }
+        @keyframes liveBounce { 0%,100% { transform: translateY(-3px); } 50% { transform: translateY(5px); } }
+        .live-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+        .live-item {
+            display: block; flex: 0 0 calc((100% - 20px) / 3); max-width: 220px;
+            aspect-ratio: 1 / 1; border-radius: 14px; overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.15);
+            background: #0f172a;
+        }
+        .live-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .live-admin-input { width: 100%; padding: 9px; margin-bottom: 8px; border-radius: 8px; border: 1px solid #475569; background: #050811; color: #fff; font-size: 13px; }
 
         /* ===== PANEL SUPERIOR DE ADMIN ===== */
@@ -906,7 +918,7 @@
     </div>
 
     <div class="input-wrapper">
-        <input type="text" id="nombreUser" placeholder="ESCRIBE TU NOMBRE AQUÍ" list="sugerenciasCaja" autocomplete="off">
+        <input type="text" id="nombreUser" maxlength="30" placeholder="ESCRIBE TU NOMBRE AQUÍ" list="sugerenciasCaja" autocomplete="off">
         <datalist id="sugerenciasCaja"></datalist>
     </div>
 
@@ -952,7 +964,13 @@
     <div class="tablero" id="tablero"></div>
     <div class="ronda-grande oculta" id="rondaGrande">🎰 RONDA 1 🎰</div>
 
-    <!-- BARRA DE VALOR ($3.000 / $1.500) Y PREMIOS DINÁMICOS ABAJO -->
+    <!-- MIRAR EN VIVO (3 botones cuadrados, solo vista normal) -->
+    <div id="liveBtnWrap">
+        <div class="live-titulo"><span class="flecha">⬇️</span> MIRAR EN VIVO <span class="flecha">⬇️</span></div>
+        <div class="live-grid" id="liveGrid"></div>
+    </div>
+
+    <!-- BARRA DE VALOR ($3.000 / $1.500) Y PREMIOS DINÁMICOS (debajo del live) -->
     <div class="info-premios-bar">
         <span id="pillValorCasilla" class="pill-valor" onclick="if(config.admin) alternarValorCasilla()" title="Valor por casilla">💵 VALOR CASILLA: $3.000</span>
         <div class="premios-live-wrap" id="premiosHeaderList">
@@ -960,7 +978,6 @@
             <span class="pill-premio">🏆 PREMIO 2: POR DEFINIR</span>
         </div>
     </div>
-    <div id="liveBtnWrap"><a id="liveBtnLink" href="#" target="_blank" rel="noopener"><img id="liveBtnImg" src="" alt="Entrar al Live"></a></div>
 </div>
 
 <!-- PANEL INFERIOR DEL ADMINISTRADOR -->
@@ -1022,13 +1039,31 @@
             ⚠️ Esto reinicia: RONDA, RONDAS POR JUGADOR, RANKING y GANADORES
         </div>
 
-        <button class="btn" style="background:#7c3aed; color:white; width:100%; font-size:15px; font-weight:900; padding:14px; border:2px solid #c4b5fd; border-radius:12px;" onclick="var d=document.getElementById('liveAdminBox'); d.style.display = d.style.display==='none' ? 'block' : 'none';">📺 ENTRAR AL LIVE</button>
-        <div id="liveAdminBox" class="card-admin-box" style="display:none;">
-            <input type="text" id="liveImgUrl" class="live-admin-input" placeholder="Link de la imagen (https://...)">
-            <input type="text" id="liveLinkUrl" class="live-admin-input" placeholder="Link al que redirige (https://...)">
+        <button class="btn" style="background:#7c3aed; color:white; width:100%; font-size:15px; font-weight:900; padding:14px; border:2px solid #c4b5fd; border-radius:12px;" onclick="var d=document.getElementById('liveAdminBox1'); d.style.display = d.style.display==='none' ? 'block' : 'none';">📺 ENTRAR AL LIVE 1</button>
+        <div id="liveAdminBox1" class="card-admin-box" style="display:none;">
+            <input type="text" id="liveImgUrl1" class="live-admin-input" placeholder="Link de la imagen cuadrada (https://...)">
+            <input type="text" id="liveLinkUrl1" class="live-admin-input" placeholder="Link al que redirige (https://...)">
             <div style="display:flex; gap:8px;">
-                <button class="btn" style="background:#10b981; color:white; flex:1; padding:9px;" onclick="guardarBotonLive()">💾 GUARDAR</button>
-                <button class="btn" style="background:#ef4444; color:white; flex:1; padding:9px;" onclick="quitarBotonLive()">🗑️ QUITAR</button>
+                <button class="btn" style="background:#10b981; color:white; flex:1; padding:9px;" onclick="guardarBotonLive(1)">💾 GUARDAR</button>
+                <button class="btn" style="background:#ef4444; color:white; flex:1; padding:9px;" onclick="quitarBotonLive(1)">🗑️ QUITAR</button>
+            </div>
+        </div>
+        <button class="btn" style="background:#7c3aed; color:white; width:100%; font-size:15px; font-weight:900; padding:14px; border:2px solid #c4b5fd; border-radius:12px;" onclick="var d=document.getElementById('liveAdminBox2'); d.style.display = d.style.display==='none' ? 'block' : 'none';">📺 ENTRAR AL LIVE 2</button>
+        <div id="liveAdminBox2" class="card-admin-box" style="display:none;">
+            <input type="text" id="liveImgUrl2" class="live-admin-input" placeholder="Link de la imagen cuadrada (https://...)">
+            <input type="text" id="liveLinkUrl2" class="live-admin-input" placeholder="Link al que redirige (https://...)">
+            <div style="display:flex; gap:8px;">
+                <button class="btn" style="background:#10b981; color:white; flex:1; padding:9px;" onclick="guardarBotonLive(2)">💾 GUARDAR</button>
+                <button class="btn" style="background:#ef4444; color:white; flex:1; padding:9px;" onclick="quitarBotonLive(2)">🗑️ QUITAR</button>
+            </div>
+        </div>
+        <button class="btn" style="background:#7c3aed; color:white; width:100%; font-size:15px; font-weight:900; padding:14px; border:2px solid #c4b5fd; border-radius:12px;" onclick="var d=document.getElementById('liveAdminBox3'); d.style.display = d.style.display==='none' ? 'block' : 'none';">📺 ENTRAR AL LIVE 3</button>
+        <div id="liveAdminBox3" class="card-admin-box" style="display:none;">
+            <input type="text" id="liveImgUrl3" class="live-admin-input" placeholder="Link de la imagen cuadrada (https://...)">
+            <input type="text" id="liveLinkUrl3" class="live-admin-input" placeholder="Link al que redirige (https://...)">
+            <div style="display:flex; gap:8px;">
+                <button class="btn" style="background:#10b981; color:white; flex:1; padding:9px;" onclick="guardarBotonLive(3)">💾 GUARDAR</button>
+                <button class="btn" style="background:#ef4444; color:white; flex:1; padding:9px;" onclick="quitarBotonLive(3)">🗑️ QUITAR</button>
             </div>
         </div>
     </div>
@@ -1293,7 +1328,7 @@
         const headerList = document.getElementById('premiosHeaderList');
         if (headerList) {
             headerList.innerHTML = lista.map((p, idx) => `
-                <span class="pill-premio">🏆 PREMIO ${idx + 1}: ${p}</span>
+                <span class="pill-premio">🏆 PREMIO ${idx + 1}: ${escapeHtml(p)}</span>
             `).join('');
         }
 
@@ -1312,7 +1347,7 @@
                 <div class="bloque-input">
                     <div class="bloque-input-info">
                         <span class="bloque-input-label">GANADOR ${idx + 1} #:</span>
-                        <span class="bloque-input-premio">🎁 Premio ${idx + 1}: ${premioStr}</span>
+                        <span class="bloque-input-premio">🎁 Premio ${idx + 1}: ${escapeHtml(premioStr)}</span>
                     </div>
                     <input type="number"
                            class="input-ganador-orden"
@@ -1977,36 +2012,72 @@
         }
     }
 
-    let liveBtnData = { imagen: '', enlace: '' };
+    // ===== 3 BOTONES DE LIVE (cuadrados) =====
+    const LIVE_KEYS = { 1: 'live_btn', 2: 'live_btn2', 3: 'live_btn3' };
+    let liveBtns = { 1: { imagen: '', enlace: '' }, 2: { imagen: '', enlace: '' }, 3: { imagen: '', enlace: '' } };
+
+    function urlSegura(u) {
+        u = String(u || '').trim();
+        return /^https?:\/\//i.test(u) ? u : "";
+    }
+    function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, ch => (
+            { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]
+        ));
+    }
+
     function renderLiveBtn() {
         const wrap = document.getElementById('liveBtnWrap');
-        if (!wrap) return;
-        const ok = !config.admin && liveBtnData.imagen;
-        wrap.style.display = ok ? 'block' : 'none';
-        if (ok) {
-            document.getElementById('liveBtnImg').src = liveBtnData.imagen;
-            const a = document.getElementById('liveBtnLink');
-            a.href = liveBtnData.enlace || '#';
-        }
+        const grid = document.getElementById('liveGrid');
+        if (!wrap || !grid) return;
+        const activos = [1, 2, 3].filter(i => urlSegura(liveBtns[i].imagen));
+        const mostrar = !config.admin && activos.length > 0;
+        wrap.style.display = mostrar ? 'block' : 'none';
+        if (!mostrar) { grid.innerHTML = ''; return; }
+        const firma = activos.map(i => liveBtns[i].imagen + '|' + liveBtns[i].enlace).join('||');
+        if (grid.dataset.firma === firma) return; // evita parpadeo
+        grid.dataset.firma = firma;
+        grid.innerHTML = '';
+        activos.forEach(i => {
+            const a = document.createElement('a');
+            a.className = 'live-item';
+            a.href = urlSegura(liveBtns[i].enlace) || '#';
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            const img = document.createElement('img');
+            img.src = urlSegura(liveBtns[i].imagen);
+            img.alt = 'Mirar en vivo ' + i;
+            img.onerror = () => { a.style.display = 'none'; };
+            a.appendChild(img);
+            grid.appendChild(a);
+        });
     }
-    window.guardarBotonLive = async () => {
-        const imagen = document.getElementById('liveImgUrl').value.trim();
-        const enlace = document.getElementById('liveLinkUrl').value.trim();
-        await anotarseRef.child('live_btn').set({ imagen, enlace });
-        alert('Botón del Live guardado ✅');
+    window.guardarBotonLive = async (n) => {
+        const imagen = document.getElementById('liveImgUrl' + n).value.trim();
+        const enlace = document.getElementById('liveLinkUrl' + n).value.trim();
+        if (imagen && !urlSegura(imagen)) { alert('⚠️ El link de la imagen debe empezar con https://'); return; }
+        if (enlace && !urlSegura(enlace)) { alert('⚠️ El link de redirección debe empezar con https://'); return; }
+        try {
+            await anotarseRef.child(LIVE_KEYS[n]).set({ imagen, enlace });
+            alert('Botón del Live ' + n + ' guardado ✅');
+        } catch (e) { alert('❌ No se pudo guardar: ' + e.message); }
     };
-    window.quitarBotonLive = async () => {
-        await anotarseRef.child('live_btn').remove();
-        document.getElementById('liveImgUrl').value = '';
-        document.getElementById('liveLinkUrl').value = '';
+    window.quitarBotonLive = async (n) => {
+        try {
+            await anotarseRef.child(LIVE_KEYS[n]).remove();
+            document.getElementById('liveImgUrl' + n).value = '';
+            document.getElementById('liveLinkUrl' + n).value = '';
+        } catch (e) { alert('❌ No se pudo quitar: ' + e.message); }
     };
-    anotarseRef.child('live_btn').on('value', snap => {
-        const v = snap.val() || {};
-        liveBtnData = { imagen: v.imagen || '', enlace: v.enlace || '' };
-        const i = document.getElementById('liveImgUrl'), l = document.getElementById('liveLinkUrl');
-        if (i && document.activeElement !== i) i.value = liveBtnData.imagen;
-        if (l && document.activeElement !== l) l.value = liveBtnData.enlace;
-        renderLiveBtn();
+    [1, 2, 3].forEach(n => {
+        anotarseRef.child(LIVE_KEYS[n]).on('value', snap => {
+            const v = snap.val() || {};
+            liveBtns[n] = { imagen: v.imagen || '', enlace: v.enlace || '' };
+            const i = document.getElementById('liveImgUrl' + n), l = document.getElementById('liveLinkUrl' + n);
+            if (i && document.activeElement !== i) i.value = liveBtns[n].imagen;
+            if (l && document.activeElement !== l) l.value = liveBtns[n].enlace;
+            renderLiveBtn();
+        });
     });
 
     let botonInvisibleActivo = false;
@@ -2105,10 +2176,49 @@
         // No se realizan escrituras duplicadas para ahorrar recursos de Firebase
     }
 
-    async function manejarClick(c, l) {
-        if (cronometroActivo || pendingUpdate) return;
+    // =========================================================================
+    // ESCRITURA SEGURA (evita que una persona borre lo que anotó otra)
+    // - Anotarse: TRANSACCIÓN sobre la línea exacta (solo gana el primero).
+    // - Acciones de admin: se escriben SOLO las líneas que cambiaron (multi-path),
+    //   nunca se reemplaza todo el arreglo de cartones.
+    // =========================================================================
+    let rawCartonesRemoto = null;
+    const lineasEnProceso = new Set();
 
-        const lineaActual = datos[c].lineas[l];
+    async function anotarLineaTransaccion(c, l, nombre) {
+        const ref = anotarseRef.child('cartones/' + c + '/lineas/' + l);
+        const res = await ref.transaction(cur => {
+            if (cur && cur.nombre && String(cur.nombre).trim() !== '') return; // ya ocupada -> cancelar
+            if (cur && cur.estado && cur.estado !== 'libre') return;           // reservada/pagada -> cancelar
+            return { nombre: nombre, estado: 'reservado' };
+        }, undefined, false);
+        return res.committed;
+    }
+
+    // Guarda solo las diferencias entre `datos` (actual) y `nuevos`.
+    async function guardarCartonesDiff(nuevos, extra) {
+        const updates = Object.assign({}, extra || {});
+        const maxC = Math.max(datos.length, nuevos.length);
+        for (let c = 0; c < maxC; c++) {
+            const vl = (datos[c] && datos[c].lineas) || [];
+            const nl = (nuevos[c] && nuevos[c].lineas) || [];
+            const maxL = Math.max(vl.length, nl.length);
+            for (let l = 0; l < maxL; l++) {
+                const v = vl[l], n = nl[l];
+                if (!n) { updates['cartones/' + c + '/lineas/' + l] = null; continue; }
+                if (!v || v.nombre !== n.nombre || v.estado !== n.estado) {
+                    updates['cartones/' + c + '/lineas/' + l] = { nombre: n.nombre || '', estado: n.estado || 'libre' };
+                }
+            }
+        }
+        datos = nuevos;
+        if (Object.keys(updates).length > 0) await anotarseRef.update(updates);
+    }
+
+    async function manejarClick(c, l) {
+        if (cronometroActivo) return;
+
+        const lineaActual = (datos[c] && datos[c].lineas && datos[c].lineas[l]) || { nombre: '', estado: 'libre' };
         const nombreClick = lineaActual.nombre;
 
         if (modoVerificacion && nombreClick && nombreClick !== "") {
@@ -2127,25 +2237,11 @@
             return;
         }
 
+        const nombreInput = document.getElementById("nombreUser").value.trim().toUpperCase().slice(0, 30);
+
         if (config.admin) {
-            const nombreInput = document.getElementById("nombreUser").value.trim().toUpperCase();
-            if (lineaActual.estado === "libre" && nombreInput !== "") {
-                pendingUpdate = true;
-                guardarHistorial();
-                try {
-                    const snap = await anotarseRef.child('cartones').once('value');
-                    let cartonesActuales = normalizarCartones(snap.val() || datos, totalCartonesActual);
-                    if (cartonesActuales[c].lineas[l].estado !== "libre") {
-                        pendingUpdate = false;
-                        return;
-                    }
-                    cartonesActuales[c].lineas[l] = { nombre: nombreInput, estado: "reservado" };
-                    await anotarseRef.update({ cartones: cartonesActuales });
-                    sincronizarResumenAnotadosEnFirebase(cartonesActuales);
-                } catch (e) {
-                    console.error(e);
-                }
-                pendingUpdate = false;
+            if (lineaActual.estado === "libre" && !nombreClick && nombreInput !== "") {
+                await intentarAnotar(c, l, nombreInput, false);
             } else if (botonInvisibleActivo) {
                 await seleccionarNumeroInteligente(c);
             } else {
@@ -2157,31 +2253,29 @@
             return;
         }
 
-        if (config.bloqueado && !config.admin) return;
-        const n = document.getElementById("nombreUser").value.trim().toUpperCase();
-        if (!n) {
+        if (config.bloqueado) return;
+        if (!nombreInput) {
             document.getElementById("nombreUser").focus();
             return;
         }
+        if (lineaActual.estado === "libre" && !nombreClick) {
+            await intentarAnotar(c, l, nombreInput, true);
+        }
+    }
 
-        if (lineaActual.estado === "libre") {
-            pendingUpdate = true;
-            guardarHistorial();
-            try {
-                const snap = await anotarseRef.child('cartones').once('value');
-                let cartonesActuales = normalizarCartones(snap.val() || datos, totalCartonesActual);
-                if (cartonesActuales[c].lineas[l].estado !== "libre") {
-                    alert("⚠️ Esta línea ya fue ocupada por otra persona.");
-                    pendingUpdate = false;
-                    return;
-                }
-                cartonesActuales[c].lineas[l] = { nombre: n, estado: "reservado" };
-                await anotarseRef.update({ cartones: cartonesActuales });
-                sincronizarResumenAnotadosEnFirebase(cartonesActuales);
-            } catch (e) {
-                console.error(e);
-            }
-            pendingUpdate = false;
+    async function intentarAnotar(c, l, nombre, avisar) {
+        const clave = c + '_' + l;
+        if (lineasEnProceso.has(clave)) return; // doble clic en la misma línea
+        lineasEnProceso.add(clave);
+        try {
+            if (config.admin) guardarHistorial();
+            const ok = await anotarLineaTransaccion(c, l, nombre);
+            if (!ok && avisar) alert("⚠️ Esa línea ya fue ocupada por otra persona. Elige otra.");
+        } catch (e) {
+            console.error(e);
+            alert("❌ No se pudo anotar. Revisa tu conexión e intenta de nuevo.");
+        } finally {
+            lineasEnProceso.delete(clave);
         }
     }
 
@@ -2300,12 +2394,12 @@
     window.aplicarModificacionMultiple = async () => {
         let nuevoTexto = document.getElementById("modalNombreInput").value.trim().toUpperCase();
         guardarHistorial();
+        const nuevos = JSON.parse(JSON.stringify(datos));
         for (let sel of seleccionados) {
-            datos[sel.c].lineas[sel.l].nombre = nuevoTexto;
-            datos[sel.c].lineas[sel.l].estado = nuevoTexto ? "reservado" : "libre";
+            nuevos[sel.c].lineas[sel.l].nombre = nuevoTexto;
+            nuevos[sel.c].lineas[sel.l].estado = nuevoTexto ? "reservado" : "libre";
         }
-        await anotarseRef.update({ cartones: datos });
-        sincronizarResumenAnotadosEnFirebase(datos);
+        try { await guardarCartonesDiff(nuevos); } catch (e) { alert("❌ Error al guardar: " + e.message); return; }
         seleccionados = [];
         cerrarModal();
         dibujar();
@@ -2398,12 +2492,11 @@
         }
 
         if (cambiosRealizados) {
-            datos = cartonesAActualizar;
             seleccionados = [];
             document.getElementById("msgLineas").innerText = "";
             document.getElementById("notas-caja").value = nuevaCaja;
-            await anotarseRef.update({ cartones: datos, notas_caja: nuevaCaja });
-            sincronizarResumenAnotadosEnFirebase(datos);
+            try { await guardarCartonesDiff(cartonesAActualizar, { notas_caja: nuevaCaja }); }
+            catch (e) { alert("❌ Error al guardar: " + e.message); return; }
             dibujar();
             actualizarStats();
         }
@@ -2596,9 +2689,8 @@
 
     window.deshacerAccion = async () => {
         if (historial.length) {
-            datos = historial.pop();
-            await anotarseRef.update({ cartones: datos });
-            sincronizarResumenAnotadosEnFirebase(datos);
+            const anterior = historial.pop();
+            try { await guardarCartonesDiff(anterior); } catch (e) { alert("❌ Error al deshacer: " + e.message); return; }
             seleccionados = [];
             dibujar();
             actualizarStats();
@@ -2685,11 +2777,12 @@
 
     window.gestionarFilas = async (cambio) => {
         guardarHistorial();
-        datos.forEach(c => {
+        const nuevos = JSON.parse(JSON.stringify(datos));
+        nuevos.forEach(c => {
             if (cambio === 1) c.lineas.push({ nombre: "", estado: "libre" });
             else if (cambio === -1 && c.lineas.length > 1) c.lineas.pop();
         });
-        await anotarseRef.update({ cartones: datos });
+        try { await guardarCartonesDiff(nuevos); } catch (e) { alert("❌ Error: " + e.message); }
     };
 
     window.cambiarCols = (v) => {
@@ -2812,6 +2905,8 @@
 
         let idx = 0;
         let asignaciones = [];
+        const datosOriginales = datos;
+        datos = JSON.parse(JSON.stringify(datosOriginales));
 
         for (const jug of participantesPendientes) {
             const nombreLimpio = limpiarNombre(jug.nombre);
@@ -2848,8 +2943,9 @@
             }
         }
 
-        await anotarseRef.update({ cartones: datos });
-        sincronizarResumenAnotadosEnFirebase(datos);
+        const nuevosRuleta = datos;
+        datos = datosOriginales;
+        try { await guardarCartonesDiff(nuevosRuleta); } catch (e) { alert("❌ Error al asignar: " + e.message); return; }
         mostrarResultadoRuleta(asignaciones, tramo);
         dibujar();
         actualizarStats();
@@ -2914,9 +3010,18 @@
                 if (labelEl) {
                     labelEl.textContent = `🟢`;
                 }
-                if (datos.length > 0 && datos.length !== totalCartonesActual) {
-                    datos = normalizarCartones(datos, totalCartonesActual);
-                    anotarseRef.update({ cartones: datos });
+                if (rawCartonesRemoto !== null) {
+                    // Re-normalizar desde lo que hay en Firebase (no desde datos ya truncados)
+                    datos = normalizarCartones(rawCartonesRemoto, totalCartonesActual);
+                    const cantRemota = Array.isArray(rawCartonesRemoto)
+                        ? rawCartonesRemoto.length
+                        : Object.keys(rawCartonesRemoto || {}).length;
+                    if (cantRemota < totalCartonesActual) {
+                        // Solo se agregan los cartones que faltan; nunca se tocan los existentes
+                        const faltantes = {};
+                        for (let i = cantRemota; i < totalCartonesActual; i++) faltantes['cartones/' + i] = datos[i];
+                        anotarseRef.update(faltantes);
+                    }
                 }
                 renderizarPremiosYCuadrosGanadores();
                 dibujar();
@@ -2933,7 +3038,8 @@
             if (!snap.exists()) return;
             const d = snap.val();
 
-            datos = normalizarCartones(d.cartones || [], totalCartonesActual);
+            rawCartonesRemoto = d.cartones || [];
+            datos = normalizarCartones(rawCartonesRemoto, totalCartonesActual);
             config.bloqueado = Boolean(d.bloqueado);
 
             const btnB = document.getElementById("btnBloqueo");
