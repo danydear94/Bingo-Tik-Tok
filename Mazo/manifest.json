@@ -1,0 +1,24 @@
+{
+  "name": "Mazo de Cartas Pro",
+  "short_name": "Mazo Cartas",
+  "description": "Juego de Mazo de Cartas con Wordwall Pro Deluxe.",
+  "start_url": "./index.html",
+  "display": "fullscreen",
+  "background_color": "#164e87",
+  "theme_color": "#164e87",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "Imagen-Mazo.png",
+      "sizes": "572x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "Logo-Mazo.png",
+      "sizes": "500x500",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
