@@ -7,13 +7,13 @@
     
     <meta property="og:title" content="🎰 BINGO EN VIVO - ANOTARSE">
     <meta property="og:description" content="Ingresa a este link para escoger tu número de la suerte. ⬇️⬇️⬇️">
-    <meta property="og:image" content="https://i.postimg.cc/sgSxndr3/Bingo-Tik-Tok.png">
-    <meta property="og:image:secure_url" content="https://i.postimg.cc/sgSxndr3/Bingo-Tik-Tok.png">
+    <meta property="og:image" content="https://i.postimg.cc/fbtpHFDF/Bingo-Tik-Tok.png">
+    <meta property="og:image:secure_url" content="https://i.postimg.cc/fbtpHFDF/Bingo-Tik-Tok.png">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="600">
     <meta property="og:image:height" content="274">
     <meta property="og:type" content="website">
-    <link rel="icon" type="image/png" href="https://i.postimg.cc/QC2s5CVS/logo-tik.png">
+    <link rel="icon" type="image/png" href="https://i.postimg.cc/fbtpHFDF/Bingo-Tik-Tok.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -77,14 +77,15 @@
             gap: 8px;
         }
 
-        .brand-logo-img {
-            height: 46px;
-            width: auto;
-            min-width: 46px;
-            display: block;
-            border-radius: 8px;
-            object-fit: contain;
-        }
+     .brand-logo-img {
+    height: 46px;
+    width: 240px;       /* Aumenta este valor según qué tan ancho lo quieras */
+    min-width: 200px;
+    display: block;
+    border-radius: 8px;
+    object-fit: cover;  /* Llena todo el espacio ancho recortando ligeramente los extremos si es muy cuadrada */
+    object-position: center; /* Centra la imagen para que no se pierda el centro */
+}
 
         .brand-sub-game {
             font-size: 16px;
@@ -900,6 +901,167 @@
             font-weight: 800;
             text-align: center;
         }
+        /* =====================================================================
+           BOTONES DE LIVE POR PLATAFORMA (panel admin)
+           ===================================================================== */
+        .btn-live-plat {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            width: 100%; padding: 14px 16px; border-radius: 12px; cursor: pointer;
+            font-family: var(--font-main); font-size: 15px; font-weight: 900;
+            letter-spacing: .6px; text-transform: uppercase; color: #fff;
+            border: 2px solid transparent; transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
+        }
+        .btn-live-plat:hover { filter: brightness(1.12); transform: translateY(-1px); }
+        .btn-live-plat:active { transform: translateY(1px); }
+        .btn-live-plat svg { width: 22px; height: 22px; flex: 0 0 auto; fill: currentColor; }
+        .btn-live-plat small { font-size: 11px; font-weight: 800; opacity: .85; letter-spacing: .4px; }
+
+        .btn-live-tt {
+            background: linear-gradient(135deg, #010101 0%, #1a1a1a 100%);
+            border-color: #25f4ee;
+            box-shadow: -3px 0 0 #25f4ee, 3px 0 0 #fe2c55, 0 6px 16px rgba(0,0,0,.45);
+        }
+        .btn-live-fb {
+            background: linear-gradient(135deg, #1877f2 0%, #0b5ed7 100%);
+            border-color: #93c5fd;
+            box-shadow: 0 6px 16px rgba(24,119,242,.35);
+        }
+        .btn-live-yt {
+            background: linear-gradient(135deg, #ff0000 0%, #b91c1c 100%);
+            border-color: #fecaca;
+            box-shadow: 0 6px 16px rgba(255,0,0,.35);
+        }
+
+        /* Cajas de configuración de cada live con borde del color de la plataforma */
+        #liveAdminBox1 { border-color: #25f4ee; }
+        #liveAdminBox2 { border-color: #1877f2; }
+        #liveAdminBox3 { border-color: #ff0000; }
+
+        /* Botones públicos "MIRAR EN VIVO": borde + etiqueta por plataforma */
+        .live-item { position: relative; transition: transform .15s ease; }
+        .live-item:hover { transform: translateY(-2px); }
+        .live-item .live-tag {
+            position: absolute; left: 0; right: 0; bottom: 0; padding: 4px 6px;
+            font-size: 11px; font-weight: 900; letter-spacing: .5px; text-transform: uppercase;
+            color: #fff; text-align: center; text-shadow: 0 1px 2px rgba(0,0,0,.5);
+        }
+        .live-p1 { border-color: #25f4ee !important; box-shadow: -2px 0 0 #25f4ee, 2px 0 0 #fe2c55, 0 4px 16px rgba(0,0,0,.5) !important; }
+        .live-p1 .live-tag { background: linear-gradient(90deg, rgba(37,244,238,.9), rgba(254,44,85,.9)); color: #010101; text-shadow: none; }
+        .live-p2 { border-color: #1877f2 !important; }
+        .live-p2 .live-tag { background: rgba(24,119,242,.92); }
+        .live-p3 { border-color: #ff0000 !important; }
+        .live-p3 .live-tag { background: rgba(220,38,38,.92); }
+
+        /* =====================================================================
+           BOTÓN "MANDAR LINK" + MODAL DE VISTA PREVIA
+           ===================================================================== */
+        .btn-mandar-link {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+            color: #fff; width: 100%; font-size: 14px; font-weight: 900; padding: 13px;
+            border: 1.5px solid var(--oro); border-radius: 12px; cursor: pointer;
+            text-transform: uppercase; font-family: var(--font-main);
+            box-shadow: 0 6px 16px rgba(18,140,126,.35);
+        }
+        .btn-mandar-link:hover { filter: brightness(1.1); }
+
+        .link-preview {
+            background: #050811; border: 1px solid #334155; border-radius: 12px;
+            padding: 14px; margin: 10px 0 4px 0; max-height: 46vh; overflow-y: auto;
+            font-size: 14px; line-height: 1.55; color: #e2e8f0; white-space: pre-wrap;
+            word-break: break-word; text-transform: none;
+        }
+        .link-preview b { color: var(--oro-brillo); }
+        .link-preview a { color: #38bdf8; }
+        .btn-whatsapp { background: #25d366 !important; color: #052e16 !important; }
+        .btn-copiar-link { background: var(--oro) !important; color: #0f172a !important; }
+
+        /* =====================================================================
+           RESPONSIVE
+           ===================================================================== */
+        html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+        body { overflow-x: hidden; min-height: 100vh; min-height: 100dvh; }
+        img { max-width: 100%; }
+        .modal { overflow-y: auto; }
+        .modal-content { max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); overflow-y: auto; }
+        /* BRAND: siempre en UNA sola fila (logo + lupa + admin), nunca se baja */
+        .brand-container { flex-wrap: nowrap !important; justify-content: space-between; gap: 8px; }
+        .brand-left { flex: 1 1 auto; min-width: 0; }
+        .brand-actions { flex: 0 0 auto; flex-wrap: nowrap; white-space: nowrap; }
+        .brand-logo-img { max-width: 100%; min-width: 0; width: 240px; height: auto; aspect-ratio: 240 / 46; }
+
+        /* Tablet */
+        @media (max-width: 1024px) {
+            .tablero { gap: 8px; padding: 12px 10px 6px 10px; }
+            .live-item { max-width: 200px; }
+        }
+
+        /* Celular */
+        @media (max-width: 700px) {
+            .header { padding: 8px 10px 6px 10px; }
+            .brand-actions { gap: 5px; }
+            .brand-actions .btn { padding: 6px 9px; font-size: 11px; }
+            .tablero { gap: 6px; padding: 10px 8px 4px 8px; }
+            .carton-h { font-size: 16px; }
+            .info-premios-bar { margin: 12px auto 16px auto; padding: 0 10px; }
+            .pill-valor, .pill-premio { font-size: 11px; }
+            #liveBtnWrap { padding: 0 10px; }
+            .live-titulo { font-size: 16px; }
+            .live-item .live-tag { font-size: 9.5px; padding: 3px 2px; }
+            #adminExtraPanel { padding: 0 10px; margin-bottom: 90px; }
+            .card-admin-box { padding: 12px; }
+            .btn-limpiar-ronda { font-size: 16px; padding: 20px 10px; }
+            .btn-reiniciar-todo { font-size: 16px; padding: 15px; }
+            .btn-live-plat { font-size: 14px; padding: 13px 12px; }
+            .cronometro-tiempo { font-size: 72px; }
+            .cronometro-sub { font-size: 16px; }
+            .cronometro-aviso { font-size: 12.5px; padding: 8px 12px; border-radius: 16px; }
+            .cronometro-emojis { font-size: 26px; letter-spacing: 5px; }
+            .modal { padding: 8px; align-items: flex-start; }
+            .modal-content { padding: 16px; margin: auto; }
+            .modal-buttons button { min-width: 0; padding: 11px 6px; font-size: 12px; }
+            .bloque-input { gap: 8px; padding: 8px 10px; }
+            .bloque-input input { width: 74px; font-size: 16px; }
+        }
+
+        /* Celulares pequeños */
+        @media (max-width: 380px) {
+            .brand-actions .btn { padding: 5px 7px; font-size: 10px; }
+            .brand-actions { gap: 4px; }
+            .linea { font-size: 11px; min-height: 46px; padding: 4px 2px; }
+            .live-grid { gap: 6px; }
+            .live-item { flex-basis: calc((100% - 12px) / 3); }
+            .btn-live-plat small { display: none; }
+            .cronometro-tiempo { font-size: 60px; }
+        }
+
+        /* Pantallas grandes: panel admin más cómodo */
+        @media (min-width: 1100px) {
+            #adminExtraPanel { max-width: 640px; }
+            .live-item { max-width: 240px; }
+        }
+
+        /* Celular en horizontal (poca altura) */
+        @media (max-height: 480px) and (orientation: landscape) {
+            .header { position: static; }
+            .cronometro-tiempo { font-size: 56px; margin: 2px 0; }
+            .cronometro-emojis, .cronometro-aviso { display: none; }
+        }
+        /* ACTIVAR / DESACTIVAR BOTÓN DE LIVE */
+        .live-toggle {
+            width: 100%; margin-bottom: 10px; padding: 11px; border-radius: 10px; cursor: pointer;
+            font-family: var(--font-main); font-size: 13px; font-weight: 900; letter-spacing: .4px;
+            text-transform: uppercase; border: 2px solid transparent; transition: filter .15s ease;
+        }
+        .live-toggle:hover { filter: brightness(1.1); }
+        .live-toggle.on  { background: #00c853; color: #052e16; border-color: #69f0ae; }
+        .live-toggle.off { background: #334155; color: #cbd5e1; border-color: #64748b; }
+        .live-estado {
+            font-style: normal; font-size: 10px; font-weight: 900; padding: 2px 8px; border-radius: 999px;
+            background: #00c853; color: #052e16; letter-spacing: .5px; flex: 0 0 auto;
+        }
+        .live-estado.off { background: #475569; color: #e2e8f0; }
+        .btn-live-plat.apagado { filter: grayscale(.85) brightness(.75); }
     </style>
 </head>
 <body>
@@ -908,8 +1070,7 @@
     <div class="brand-container">
         <div class="brand-left">
             <!-- ESPACIO PARA TU LOGO + BOTÓN VERDE -->
-            <img src="https://i.postimg.cc/QC2s5CVS/logo-tik.png" class="brand-logo-img" alt="Logo">
-            <span class="brand-sub-game" id="activeGameLabel">🟢</span>
+            <img src="https://i.postimg.cc/6QrFZPwp/Logo-Bingo-Live.png" class="brand-logo-img" alt="Logo">
         </div>
         <div class="brand-actions">
             <button id="btnLupaExterna" class="btn" style="background:#0284c7; color:white; font-size: 16px; padding: 6px 12px;" onclick="toggleVerificacionGlobal()" title="Verificar líneas de un jugador">🔍</button>
@@ -936,7 +1097,7 @@
     <button id="btnBloqueo" class="btn" onclick="toggleBloqueo()">🔓 ABIERTO</button>
     <button class="btn" style="background:#6d28d9; color:white" onclick="deshacerAccion()">↩️ DESHACER</button>
     <button class="btn" style="background:#0284c7; color:white" onclick="mostrarModalModificar()">✏️ MODIFICAR NOMBRE(S)</button>
-    <button id="btnPagarCasilla" class="btn" style="background:#10b981; color:white" onclick="marcarAccion('pagado')">💰 PAGAR ($3.000)</button>
+    <button id="btnPagarCasilla" class="btn" style="background:#00c853; color:white; border:1px solid #69f0ae; box-shadow:0 0 10px rgba(0,200,83,.55);" onclick="marcarAccion('pagado')">💰 PAGAR ($3.000)</button>
     <button class="btn" style="background:#dc2626; color:#ffffff" onclick="marcarAccion('libre')">❌ LIBERAR</button>
     <button id="btnBlanco" class="btn" style="background:#ffffff; color:#0f172a; border:1px solid #94a3b8;" onclick="toggleModoBlanco()">BLANCO</button>
     <label class="col-control" style="cursor:pointer; user-select:none;" title="Activar o desactivar cartas inteligentes">
@@ -1009,6 +1170,7 @@
 
     <div class="admin-buttons-stack">
         <button class="btn-limpiar-ronda" onclick="reiniciarBingo()">🧹 BORRAR TODO Y EMPEZAR NUEVA RONDA</button>
+        <button class="btn-mandar-link" onclick="mostrarModalMandarLink()">🔗 MANDAR LINK</button>
 
         <div class="separador-peligro">
             <span>⚠️ 🚨 ⚠️ GESTIÓN Y ESTADÍSTICAS DEL DÍA ⚠️ 🚨 ⚠️</span>
@@ -1039,28 +1201,31 @@
             ⚠️ Esto reinicia: RONDA, RONDAS POR JUGADOR, RANKING y GANADORES
         </div>
 
-        <button class="btn" style="background:#7c3aed; color:white; width:100%; font-size:15px; font-weight:900; padding:14px; border:2px solid #c4b5fd; border-radius:12px;" onclick="var d=document.getElementById('liveAdminBox1'); d.style.display = d.style.display==='none' ? 'block' : 'none';">📺 ENTRAR AL LIVE 1</button>
+        <button class="btn-live-plat btn-live-tt" onclick="var d=document.getElementById('liveAdminBox1'); d.style.display = d.style.display==='none' ? 'block' : 'none';"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.6 6.7a4.9 4.9 0 0 1-3-1.1 4.9 4.9 0 0 1-1.6-2.8h-3.3v11.6a2.4 2.4 0 1 1-2.4-2.4c.2 0 .5 0 .7.1V8.7a5.7 5.7 0 1 0 5 5.7V9.2a8.1 8.1 0 0 0 4.6 1.4V7.3a4.9 4.9 0 0 1-.1-.6z"/></svg><span>TikTok</span><small>· ENTRAR AL LIVE 1</small><em class="live-estado" id="liveEstado1">ON</em></button>
         <div id="liveAdminBox1" class="card-admin-box" style="display:none;">
-            <input type="text" id="liveImgUrl1" class="live-admin-input" placeholder="Link de la imagen cuadrada (https://...)">
-            <input type="text" id="liveLinkUrl1" class="live-admin-input" placeholder="Link al que redirige (https://...)">
+            <button type="button" id="liveToggle1" class="live-toggle on" onclick="toggleActivoLive(1)">🟢 ACTIVO · se muestra a todos</button>
+            <input type="text" id="liveImgUrl1" class="live-admin-input" placeholder="Imagen cuadrada del botón de TikTok (https://...)">
+            <input type="text" id="liveLinkUrl1" class="live-admin-input" placeholder="Link del live de TikTok (https://...)">
             <div style="display:flex; gap:8px;">
                 <button class="btn" style="background:#10b981; color:white; flex:1; padding:9px;" onclick="guardarBotonLive(1)">💾 GUARDAR</button>
                 <button class="btn" style="background:#ef4444; color:white; flex:1; padding:9px;" onclick="quitarBotonLive(1)">🗑️ QUITAR</button>
             </div>
         </div>
-        <button class="btn" style="background:#7c3aed; color:white; width:100%; font-size:15px; font-weight:900; padding:14px; border:2px solid #c4b5fd; border-radius:12px;" onclick="var d=document.getElementById('liveAdminBox2'); d.style.display = d.style.display==='none' ? 'block' : 'none';">📺 ENTRAR AL LIVE 2</button>
+        <button class="btn-live-plat btn-live-fb" onclick="var d=document.getElementById('liveAdminBox2'); d.style.display = d.style.display==='none' ? 'block' : 'none';"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 21v-8h2.7l.4-3.2h-3.1V7.8c0-.9.3-1.5 1.6-1.5h1.7V3.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.4H7.7V13h2.7v8h3.1z"/></svg><span>Facebook</span><small>· ENTRAR AL LIVE 2</small><em class="live-estado" id="liveEstado2">ON</em></button>
         <div id="liveAdminBox2" class="card-admin-box" style="display:none;">
-            <input type="text" id="liveImgUrl2" class="live-admin-input" placeholder="Link de la imagen cuadrada (https://...)">
-            <input type="text" id="liveLinkUrl2" class="live-admin-input" placeholder="Link al que redirige (https://...)">
+            <button type="button" id="liveToggle2" class="live-toggle on" onclick="toggleActivoLive(2)">🟢 ACTIVO · se muestra a todos</button>
+            <input type="text" id="liveImgUrl2" class="live-admin-input" placeholder="Imagen cuadrada del botón de Facebook (https://...)">
+            <input type="text" id="liveLinkUrl2" class="live-admin-input" placeholder="Link del live de Facebook (https://...)">
             <div style="display:flex; gap:8px;">
                 <button class="btn" style="background:#10b981; color:white; flex:1; padding:9px;" onclick="guardarBotonLive(2)">💾 GUARDAR</button>
                 <button class="btn" style="background:#ef4444; color:white; flex:1; padding:9px;" onclick="quitarBotonLive(2)">🗑️ QUITAR</button>
             </div>
         </div>
-        <button class="btn" style="background:#7c3aed; color:white; width:100%; font-size:15px; font-weight:900; padding:14px; border:2px solid #c4b5fd; border-radius:12px;" onclick="var d=document.getElementById('liveAdminBox3'); d.style.display = d.style.display==='none' ? 'block' : 'none';">📺 ENTRAR AL LIVE 3</button>
+        <button class="btn-live-plat btn-live-yt" onclick="var d=document.getElementById('liveAdminBox3'); d.style.display = d.style.display==='none' ? 'block' : 'none';"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2C2 8.8 2 12 2 12s0 3.2.4 4.8a2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8zM10 15V9l5.2 3L10 15z"/></svg><span>YouTube</span><small>· ENTRAR AL LIVE 3</small><em class="live-estado" id="liveEstado3">ON</em></button>
         <div id="liveAdminBox3" class="card-admin-box" style="display:none;">
-            <input type="text" id="liveImgUrl3" class="live-admin-input" placeholder="Link de la imagen cuadrada (https://...)">
-            <input type="text" id="liveLinkUrl3" class="live-admin-input" placeholder="Link al que redirige (https://...)">
+            <button type="button" id="liveToggle3" class="live-toggle on" onclick="toggleActivoLive(3)">🟢 ACTIVO · se muestra a todos</button>
+            <input type="text" id="liveImgUrl3" class="live-admin-input" placeholder="Imagen cuadrada del botón de YouTube (https://...)">
+            <input type="text" id="liveLinkUrl3" class="live-admin-input" placeholder="Link del live de YouTube (https://...)">
             <div style="display:flex; gap:8px;">
                 <button class="btn" style="background:#10b981; color:white; flex:1; padding:9px;" onclick="guardarBotonLive(3)">💾 GUARDAR</button>
                 <button class="btn" style="background:#ef4444; color:white; flex:1; padding:9px;" onclick="quitarBotonLive(3)">🗑️ QUITAR</button>
@@ -1181,6 +1346,20 @@
         
         <div class="modal-buttons" style="margin-top: 12px;">
             <button class="btn-rojo" onclick="cerrarModalRuleta()" style="width: 100%;">❌ CERRAR</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL MANDAR LINK -->
+<div id="modalMandarLink" class="modal">
+    <div class="modal-content" style="max-width: 500px;">
+        <h3 style="color: var(--oro); text-align: center; margin: 0 0 4px;">🔗 MANDAR LINK</h3>
+        <p style="font-size:12px; color:#94a3b8; text-align:center; margin:0;">Vista previa del mensaje (valor y premios en vivo desde Firebase)</p>
+        <div id="linkPreview" class="link-preview"></div>
+        <div class="modal-buttons">
+            <button class="btn-copiar-link" onclick="copiarMensajeLink()">📋 COPIAR</button>
+            <button class="btn-whatsapp" onclick="enviarLinkWhatsApp()">💬 WHATSAPP</button>
+            <button class="btn-rojo" onclick="cerrarModalMandarLink()">❌ CERRAR</button>
         </div>
     </div>
 </div>
@@ -2021,7 +2200,7 @@
 
     // ===== 3 BOTONES DE LIVE (cuadrados) =====
     const LIVE_KEYS = { 1: 'live_btn', 2: 'live_btn2', 3: 'live_btn3' };
-    let liveBtns = { 1: { imagen: '', enlace: '' }, 2: { imagen: '', enlace: '' }, 3: { imagen: '', enlace: '' } };
+    let liveBtns = { 1: { imagen: '', enlace: '', activo: true }, 2: { imagen: '', enlace: '', activo: true }, 3: { imagen: '', enlace: '', activo: true } };
 
     function urlSegura(u) {
         u = String(u || '').trim();
@@ -2037,7 +2216,7 @@
         const wrap = document.getElementById('liveBtnWrap');
         const grid = document.getElementById('liveGrid');
         if (!wrap || !grid) return;
-        const activos = [1, 2, 3].filter(i => urlSegura(liveBtns[i].imagen));
+        const activos = [1, 2, 3].filter(i => urlSegura(liveBtns[i].imagen) && liveBtns[i].activo !== false);
         const mostrar = !config.admin && activos.length > 0;
         wrap.style.display = mostrar ? 'block' : 'none';
         if (!mostrar) { grid.innerHTML = ''; return; }
@@ -2047,7 +2226,7 @@
         grid.innerHTML = '';
         activos.forEach(i => {
             const a = document.createElement('a');
-            a.className = 'live-item';
+            a.className = 'live-item live-p' + i;
             a.href = urlSegura(liveBtns[i].enlace) || '#';
             a.target = '_blank';
             a.rel = 'noopener noreferrer';
@@ -2056,6 +2235,10 @@
             img.alt = 'Mirar en vivo ' + i;
             img.onerror = () => { a.style.display = 'none'; };
             a.appendChild(img);
+            const tag = document.createElement('span');
+            tag.className = 'live-tag';
+            tag.textContent = ({ 1: 'TikTok', 2: 'Facebook', 3: 'YouTube' })[i];
+            a.appendChild(tag);
             grid.appendChild(a);
         });
     }
@@ -2065,9 +2248,29 @@
         if (imagen && !urlSegura(imagen)) { alert('⚠️ El link de la imagen debe empezar con https://'); return; }
         if (enlace && !urlSegura(enlace)) { alert('⚠️ El link de redirección debe empezar con https://'); return; }
         try {
-            await anotarseRef.child(LIVE_KEYS[n]).set({ imagen, enlace });
+            await anotarseRef.child(LIVE_KEYS[n]).set({ imagen, enlace, activo: liveBtns[n].activo !== false });
             alert('Botón del Live ' + n + ' guardado ✅');
         } catch (e) { alert('❌ No se pudo guardar: ' + e.message); }
+    };
+    function pintarEstadoLive(n) {
+        const on = liveBtns[n].activo !== false;
+        const t = document.getElementById('liveToggle' + n);
+        if (t) {
+            t.className = 'live-toggle ' + (on ? 'on' : 'off');
+            t.textContent = on ? '🟢 ACTIVO · se muestra a todos' : '⚪ DESACTIVADO · oculto (toca para activar)';
+        }
+        const e = document.getElementById('liveEstado' + n);
+        if (e) { e.textContent = on ? 'ON' : 'OFF'; e.className = 'live-estado' + (on ? '' : ' off'); }
+        const b = e ? e.closest('.btn-live-plat') : null;
+        if (b) b.classList.toggle('apagado', !on);
+    }
+    window.toggleActivoLive = async (n) => {
+        const nuevo = !(liveBtns[n].activo !== false);
+        liveBtns[n].activo = nuevo;
+        pintarEstadoLive(n);
+        renderLiveBtn();
+        try { await anotarseRef.child(LIVE_KEYS[n]).update({ activo: nuevo }); }
+        catch (e) { alert('❌ No se pudo cambiar: ' + e.message); }
     };
     window.quitarBotonLive = async (n) => {
         try {
@@ -2079,7 +2282,8 @@
     [1, 2, 3].forEach(n => {
         anotarseRef.child(LIVE_KEYS[n]).on('value', snap => {
             const v = snap.val() || {};
-            liveBtns[n] = { imagen: v.imagen || '', enlace: v.enlace || '' };
+            liveBtns[n] = { imagen: v.imagen || '', enlace: v.enlace || '', activo: v.activo !== false };
+            pintarEstadoLive(n);
             const i = document.getElementById('liveImgUrl' + n), l = document.getElementById('liveLinkUrl' + n);
             if (i && document.activeElement !== i) i.value = liveBtns[n].imagen;
             if (l && document.activeElement !== l) l.value = liveBtns[n].enlace;
@@ -2692,6 +2896,91 @@
         navigator.clipboard.writeText(txt);
         alert("✅ Mensaje de Ronda Gratis copiado");
     };
+
+    // ============================================================
+    // MANDAR LINK (valor + premios en vivo desde Firebase)
+    // ============================================================
+    const LINK_JUEGO = 'https://gerson2026.online/';
+    const NEQUI_NUMERO = '3169461962';
+
+    // Convierte lo que venga de Firebase ("10000", "10.000", "$10.000") a "$10.000"
+    function formatearPremioParaMensaje(txt) {
+        const t = String(txt == null ? '' : txt).trim();
+        if (!t) return 'POR DEFINIR';
+        if (/^\$?\s*[\d.,\s]+$/.test(t)) {
+            const n = parseInt(t.replace(/[^0-9]/g, ''), 10);
+            if (!isNaN(n)) return '$' + n.toLocaleString('es-CO');
+        }
+        return t;
+    }
+
+    function construirMensajeLink() {
+        const premios = obtenerListaPremiosActivos();
+        const hayFirebase = Array.isArray(premiosAdmin) && premiosAdmin.length > 0;
+        // Premio 1 = 1ro, Premio 2 = 2do, Premio 3 = 3er (vienen de Firebase)
+        const p = (idx) => hayFirebase ? (idx < premios.length ? formatearPremioParaMensaje(premios[idx]) : null) : 'POR DEFINIR';
+        const valor = '$' + Number(valorCasillaPesos || 3000).toLocaleString('es-CO');
+
+        const lineasPremios = [];
+        if (p(2) !== null) lineasPremios.push(`🥉 *3er:* ${p(2)}💰`);
+        if (p(1) !== null) lineasPremios.push(`🥈 *2do:* ${p(1)}💰`);
+        lineasPremios.push(`👑 *1ro:* ${p(0)}💰`);
+
+        return [
+            'PIDAN SUS NÚMEROS AQUÍ',
+            '⬇️⬇️⬇️⬇️⬇️',
+            '',
+            LINK_JUEGO,
+            '',
+            `*💵 Valor:* ${valor}`,
+            '───────',
+            ...lineasPremios,
+            '',
+            '🎡🔥 ¡La Ruleta Paga Doble x2! 🔥🎡',
+            '───────',
+            '',
+            `✅ *Nequi: ${NEQUI_NUMERO}*`,
+            '✅ *Juega con responsabilidad y disfruta la dinámica.*'
+        ].join('\n');
+    }
+
+    // Misma sintaxis de WhatsApp (*negrita*) mostrada como negrita en la vista previa
+    function mensajeAHtmlPreview(txt) {
+        return escapeHtml(txt)
+            .replace(/\*([^*\n]+)\*/g, '<b>$1</b>')
+            .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+    }
+
+    window.mostrarModalMandarLink = () => {
+        document.getElementById('linkPreview').innerHTML = mensajeAHtmlPreview(construirMensajeLink());
+        document.getElementById('modalMandarLink').style.display = 'flex';
+    };
+    window.cerrarModalMandarLink = () => {
+        document.getElementById('modalMandarLink').style.display = 'none';
+    };
+    window.copiarMensajeLink = async () => {
+        const txt = construirMensajeLink();
+        try {
+            await navigator.clipboard.writeText(txt);
+        } catch (e) {
+            const ta = document.createElement('textarea');
+            ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+            document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); } catch (_) {}
+            document.body.removeChild(ta);
+        }
+        alert('✅ Mensaje del link copiado');
+    };
+    window.enviarLinkWhatsApp = () => {
+        window.open('https://wa.me/?text=' + encodeURIComponent(construirMensajeLink()), '_blank', 'noopener');
+    };
+    // Si cambian los premios o el valor mientras el modal está abierto, se actualiza solo
+    setInterval(() => {
+        const m = document.getElementById('modalMandarLink');
+        if (m && m.style.display === 'flex') {
+            document.getElementById('linkPreview').innerHTML = mensajeAHtmlPreview(construirMensajeLink());
+        }
+    }, 1500);
 
     window.deshacerAccion = async () => {
         if (historial.length) {
